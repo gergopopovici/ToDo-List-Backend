@@ -21,8 +21,8 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
         entities.put(entity.getId(), entity);
     }
     @Override
-    public void delete(T entity){
-        entities.remove(entity.getId());
+    public void delete(Long ID){
+        entities.remove(ID);
     }
     @Override
     public void update(T entity){
