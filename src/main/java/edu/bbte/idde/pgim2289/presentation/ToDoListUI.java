@@ -1,13 +1,21 @@
 package edu.bbte.idde.pgim2289.presentation;
-
 import edu.bbte.idde.pgim2289.model.ToDo;
+import edu.bbte.idde.pgim2289.services.ToDoService;
+import edu.bbte.idde.pgim2289.services.ToDoServiceImplementation;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
 
 public class ToDoListUI {
+    private ToDoService toDoService;
+    private DefaultTableModel tableModel;
+
     public ToDoListUI() {
         toDoListUi();
     }
@@ -15,7 +23,8 @@ public class ToDoListUI {
     public void toDoListUi() {
         JFrame frame = new JFrame("ToDo List");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        toDoService = new ToDoServiceImplementation();
+        frame.setSize(800, 400);
         frame.setLayout(new BorderLayout());
 
         JPanel inputPanel = new JPanel();
@@ -41,9 +50,9 @@ public class ToDoListUI {
         inputPanel.add(priorityLabel);
         inputPanel.add(priorityField);
 
-        String[] columnNames = {"Title", "Description", "Due Date", "Priority Level"};
+        String[] columnNames = {"ID","Title", "Description", "Due Date", "Priority Level"};
         JTable toDoTable = new JTable();
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        tableModel = new DefaultTableModel(columnNames, 0);
         toDoTable.setModel(tableModel);
 
         JTableHeader tableHeader = toDoTable.getTableHeader();
@@ -85,8 +94,84 @@ public class ToDoListUI {
         frame.add(outputScrollPane, BorderLayout.EAST);
 
         frame.setVisible(true);
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String title = titleField.getText();
+                String description = descriptionField.getText();
+                String dueDate = dueDateField.getText();
+                String priority = priorityField.getText();
+                titleField.setText("");
+                descriptionField.setText("");
+                dueDateField.setText("");
+                priorityField.setText("");
+                toDoService.create(title,description,dueDate,priority);
+                refreshTodoList(0);
+            }
+        });
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String title = titleField.getText();
+                String description = descriptionField.getText();
+                String dueDate = dueDateField.getText();
+                String priority = priorityField.getText();
+                titleField.setText("");
+                descriptionField.setText("");
+                dueDateField.setText("");
+                priorityField.setText("");
+                String idInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to update:");
+                Long idInputInteger = Long.parseLong(idInput);
+                toDoService.update(idInputInteger,title,description,dueDate,priority);
+                refreshTodoList(0);
+            }
+        });
+        listButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshTodoList(0);
+            }
+        });
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String idInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to delete:");
+                Long idInputInteger = Long.parseLong(idInput);
+                toDoService.delete(idInputInteger);
+                refreshTodoList(0);
+            }
+        });
+
+        getButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String priorityInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to delete:");
+                Integer priorityInputInteger = Integer.parseInt(priorityInput);
+                refreshTodoList(priorityInputInteger);
+            }
+        });
     }
 
+    private void refreshTodoList(Integer x) { //ha X == 0 akkor find all ha x==2 akkor kihagyja
+        tableModel.setRowCount(0);
+        Collection<ToDo> todos;
+        if(x==0) {
+            todos = toDoService.findAll();
+        }else{
+            todos = toDoService.findByPriority(x);
+        }
+        for (ToDo todo : todos) {
+            Object[] rowData = {
+                    todo.getId(),
+                    todo.getTitle(),
+                    todo.getDescription(),
+                    new SimpleDateFormat("yyyy-MM-dd").format(todo.getDate()),
+                    todo.getPriority()
+            };
+            tableModel.addRow(rowData);
+        }
+
+    }
     public static void main(String[] args) {
         new ToDoListUI();
     }
