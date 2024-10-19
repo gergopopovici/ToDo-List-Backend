@@ -43,7 +43,7 @@ public class ToDo extends BaseEntity{
         this.dueDate = date;
     }
 
-    public int getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
