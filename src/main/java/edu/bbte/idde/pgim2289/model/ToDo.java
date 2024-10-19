@@ -6,12 +6,12 @@ public class ToDo extends BaseEntity{
     private String title;
     private String description;
     private Date dueDate;
-    private int priority;
+    private Integer priority;
 
     public ToDo(){
         super();
     }
-    public ToDo(Long id, String title, String description,Date dueDate, int priority){
+    public ToDo(Long id, String title, String description,Date dueDate, Integer priority){
         super(id);
         this.dueDate = dueDate;
         this.title = title;
@@ -47,7 +47,7 @@ public class ToDo extends BaseEntity{
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
