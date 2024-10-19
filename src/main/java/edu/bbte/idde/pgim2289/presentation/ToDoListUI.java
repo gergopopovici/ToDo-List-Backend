@@ -1,4 +1,6 @@
 package edu.bbte.idde.pgim2289.presentation;
+import edu.bbte.idde.pgim2289.exceptions.EntityNotFoundException;
+import edu.bbte.idde.pgim2289.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.model.ToDo;
 import edu.bbte.idde.pgim2289.services.ToDoService;
 import edu.bbte.idde.pgim2289.services.ToDoServiceImplementation;
@@ -9,12 +11,22 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Objects;
 
 public class ToDoListUI {
     private ToDoService toDoService;
     private DefaultTableModel tableModel;
+    private String title;
+    private String description;
+    private String dueDate;
+    private String priority;
+    private JTextField titleField;
+    private JTextField descriptionField;
+    private JTextField dueDateField;
+    private JComboBox<Integer> priorityComboBox;
 
     public ToDoListUI() {
         toDoListUi();
@@ -26,37 +38,38 @@ public class ToDoListUI {
         toDoService = new ToDoServiceImplementation();
         frame.setSize(800, 400);
         frame.setLayout(new BorderLayout());
-
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(5, 2, 10, 10));
 
         JLabel titleLabel = new JLabel("Title:");
-        JTextField titleField = new JTextField();
+        titleField = new JTextField();
         inputPanel.add(titleLabel);
         inputPanel.add(titleField);
 
         JLabel descriptionLabel = new JLabel("Description:");
-        JTextField descriptionField = new JTextField();
+        descriptionField = new JTextField();
         inputPanel.add(descriptionLabel);
         inputPanel.add(descriptionField);
 
         JLabel dueDateLabel = new JLabel("Due Date (YYYY-MM-DD):");
-        JTextField dueDateField = new JTextField();
+        dueDateField = new JTextField();
         inputPanel.add(dueDateLabel);
         inputPanel.add(dueDateField);
 
         JLabel priorityLabel = new JLabel("Priority level (1-3):");
-        JTextField priorityField = new JTextField();
+        priorityComboBox = new JComboBox<>(new Integer[]{1, 2, 3});
         inputPanel.add(priorityLabel);
-        inputPanel.add(priorityField);
+        inputPanel.add(priorityComboBox);
 
         String[] columnNames = {"ID","Title", "Description", "Due Date", "Priority Level"};
         JTable toDoTable = new JTable();
         tableModel = new DefaultTableModel(columnNames, 0);
         toDoTable.setModel(tableModel);
+        toDoTable.setFont(new Font("Times New Roman", Font.BOLD,12));
+        toDoTable.setRowHeight(45);
 
         JTableHeader tableHeader = toDoTable.getTableHeader();
-        Font headerFont = new Font("Arial", Font.BOLD, 16);
+        Font headerFont = new Font("Times New Roman", Font.BOLD, 18);
         tableHeader.setFont(headerFont);
         tableHeader.setPreferredSize(new Dimension(100, 30));
 
@@ -97,32 +110,38 @@ public class ToDoListUI {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String title = titleField.getText();
-                String description = descriptionField.getText();
-                String dueDate = dueDateField.getText();
-                String priority = priorityField.getText();
-                titleField.setText("");
-                descriptionField.setText("");
-                dueDateField.setText("");
-                priorityField.setText("");
-                toDoService.create(title,description,dueDate,priority);
+                HandleInputs();
+                try {
+                    if(title == null || title.trim().isEmpty()){
+                        throw new InvalidInputException("Invalid input for Title:" + title);
+                    }
+                    if(description == null || description.trim().isEmpty()){
+                        throw new InvalidInputException("Invalid input for Description"+description);
+                    }
+                    toDoService.create(title, description, dueDate, priority);
+                }catch(ParseException|InvalidInputException ex){
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 refreshTodoList(0);
             }
         });
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String title = titleField.getText();
-                String description = descriptionField.getText();
-                String dueDate = dueDateField.getText();
-                String priority = priorityField.getText();
-                titleField.setText("");
-                descriptionField.setText("");
-                dueDateField.setText("");
-                priorityField.setText("");
-                String idInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to update:");
-                Long idInputInteger = Long.parseLong(idInput);
-                toDoService.update(idInputInteger,title,description,dueDate,priority);
+                HandleInputs();
+                try {
+                    if(title == null || title.trim().isEmpty()){
+                        throw new InvalidInputException("Invalid input for Title:" + title);
+                    }
+                    if(description == null || description.trim().isEmpty()){
+                        throw new InvalidInputException("Invalid input for Description"+description);
+                    }
+                    String idInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to update:");
+                    Long idInputInteger = Long.parseLong(idInput);
+                    toDoService.update(idInputInteger, title, description, dueDate, priority);
+                }catch (EntityNotFoundException | ParseException | NumberFormatException | InvalidInputException ex){
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 refreshTodoList(0);
             }
         });
@@ -135,19 +154,27 @@ public class ToDoListUI {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String idInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to delete:");
-                Long idInputInteger = Long.parseLong(idInput);
-                toDoService.delete(idInputInteger);
-                refreshTodoList(0);
+                try {
+                    String idInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to delete:");
+                    Long idInputInteger = Long.parseLong(idInput);
+                    toDoService.delete(idInputInteger);
+                    refreshTodoList(0);
+                }catch (EntityNotFoundException  | NumberFormatException ex){
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
         getButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String priorityInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to delete:");
-                Integer priorityInputInteger = Integer.parseInt(priorityInput);
-                refreshTodoList(priorityInputInteger);
+                String priorityInput = JOptionPane.showInputDialog(null, "Enter the priority to list the To Does according to it:");
+                try {
+                    Integer priorityInputInteger = Integer.parseInt(priorityInput);
+                    refreshTodoList(priorityInputInteger);
+                }catch(NumberFormatException ex){
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
@@ -171,6 +198,16 @@ public class ToDoListUI {
             tableModel.addRow(rowData);
         }
 
+    }
+    private void HandleInputs(){
+        title = titleField.getText();
+        description = descriptionField.getText();
+        dueDate = dueDateField.getText();
+        priority = Objects.requireNonNull(priorityComboBox.getSelectedItem()).toString();
+        titleField.setText("");
+        descriptionField.setText("");
+        dueDateField.setText("");
+        priorityComboBox.setSelectedIndex(0);
     }
     public static void main(String[] args) {
         new ToDoListUI();
