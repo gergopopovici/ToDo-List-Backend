@@ -112,12 +112,6 @@ public class ToDoListUI {
             public void actionPerformed(ActionEvent e) {
                 HandleInputs();
                 try {
-                    if(title == null || title.trim().isEmpty()){
-                        throw new InvalidInputException("Invalid input for Title:" + title);
-                    }
-                    if(description == null || description.trim().isEmpty()){
-                        throw new InvalidInputException("Invalid input for Description"+description);
-                    }
                     toDoService.create(title, description, dueDate, priority);
                 }catch(ParseException|InvalidInputException ex){
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -130,12 +124,6 @@ public class ToDoListUI {
             public void actionPerformed(ActionEvent e) {
                 HandleInputs();
                 try {
-                    if(title == null || title.trim().isEmpty()){
-                        throw new InvalidInputException("Invalid input for Title:" + title);
-                    }
-                    if(description == null || description.trim().isEmpty()){
-                        throw new InvalidInputException("Invalid input for Description"+description);
-                    }
                     String idInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to update:");
                     Long idInputInteger = Long.parseLong(idInput);
                     toDoService.update(idInputInteger, title, description, dueDate, priority);
