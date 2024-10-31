@@ -8,9 +8,9 @@ import java.text.ParseException;
 import java.util.Collection;
 
 public interface ToDoService {
-    void create(String title, String description,String dueDate,String Priority) throws ParseException;
+    void create(ToDo toDo) throws InvalidInputException;
     Collection<ToDo> findAll();
     void delete(Long ID) throws EntityNotFoundException;
-    void update(Long iD,String title, String description,String dueDate,String Priority) throws EntityNotFoundException, ParseException;
+    void update(ToDo toDo ) throws EntityNotFoundException, InvalidInputException;
     Collection<ToDo>findByPriority(Integer Priority);
 }

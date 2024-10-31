@@ -112,7 +112,13 @@ public class ToDoListUI {
             public void actionPerformed(ActionEvent e) {
                 HandleInputs();
                 try {
-                    toDoService.create(title, description, dueDate, priority);
+                    ToDo toDo = new ToDo();
+                    toDo.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(dueDate));
+                    toDo.setTitle(title);
+                    toDo.setDescription(description);
+                    toDo.setPriority(Integer.parseInt(priority));
+                    toDo.setId(null);
+                    toDoService.create(toDo);
                 }catch(ParseException|InvalidInputException ex){
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -124,9 +130,13 @@ public class ToDoListUI {
             public void actionPerformed(ActionEvent e) {
                 HandleInputs();
                 try {
-                    String idInput = JOptionPane.showInputDialog(null, "Enter ID of the entity to update:");
-                    Long idInputInteger = Long.parseLong(idInput);
-                    toDoService.update(idInputInteger, title, description, dueDate, priority);
+                    ToDo toDo = new ToDo();
+                    toDo.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(dueDate));
+                    toDo.setTitle(title);
+                    toDo.setDescription(description);
+                    toDo.setPriority(Integer.parseInt(priority));
+                    toDo.setId(null);
+                    toDoService.create(toDo);
                 }catch (EntityNotFoundException | ParseException | NumberFormatException | InvalidInputException ex){
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
