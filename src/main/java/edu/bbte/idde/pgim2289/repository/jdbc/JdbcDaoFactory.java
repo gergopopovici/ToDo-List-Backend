@@ -6,6 +6,6 @@ import edu.bbte.idde.pgim2289.repository.ToDoDao;
 public class JdbcDaoFactory extends DaoFactory {
     @Override
     public ToDoDao getToDoDao() {
-        return null;
+        return new ToDoJdbcDao();
     }
 }
