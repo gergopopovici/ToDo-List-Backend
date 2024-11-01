@@ -1,6 +1,6 @@
 package edu.bbte.idde.pgim2289.repository.mem;
 import edu.bbte.idde.pgim2289.exceptions.EntityNotFoundException;
-import edu.bbte.idde.pgim2289.exceptions.IllegalArgument;
+import edu.bbte.idde.pgim2289.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.model.BaseEntity;
 import edu.bbte.idde.pgim2289.repository.Dao;
 import java.util.Collection;
@@ -19,12 +19,12 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
     }
 
     @Override
-    public void create(T entity)throws IllegalArgument{
+    public void create(T entity)throws InvalidInputException {
         if(entity.getId() == null){
             entity.setId(nextId.getAndIncrement());
         }
         if(entities.containsKey(nextId)){
-            throw new IllegalArgument("This + "+nextId+"is already taken");
+            throw new InvalidInputException("This + "+nextId+"is already taken");
         }
         entities.put(entity.getId(), entity);
     }
