@@ -18,6 +18,7 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
 
     @Override
     public Collection<ToDo> findByPriority(Integer priority) {
+        logger.info("Finding all entities with priority " + priority);
         Collection<ToDo> todos = new ArrayList<>();
         String sql = "SELECT * FROM ToDo WHERE Priority = ?";
         try (Connection conn = getDataSource().getConnection()) {
@@ -30,6 +31,7 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
         } catch (SQLException ex) {
             logger.error("Error while executing SQL query", ex);
         }
+        logger.info("Returning all entities with priority " + priority);
         return todos;
     }
 

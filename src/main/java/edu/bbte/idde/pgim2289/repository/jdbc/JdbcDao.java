@@ -21,7 +21,8 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/toDo");
         dataSource.setUsername("root");
         dataSource.setPassword("admin");
-        dataSource.setMaximumPoolSize(10);
+        dataSource.setMaximumPoolSize(15);
+        logger.info("HikariCP data source created and connected to the database");
     }
 
 
@@ -38,6 +39,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
 
     @Override
     public Collection<T> findAll() {
+        logger.info("Finding all entities");
         Collection<T> toDos = new ArrayList<>();
         String sql = "SELECT * FROM ToDo";
         try (Connection conn = dataSource.getConnection();
@@ -55,6 +57,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
 
     @Override
     public void delete(Long id) throws EntityNotFoundException {
+        logger.info("Deleting entity with ID " + id);
         String sql = "DELETE FROM ToDo WHERE Id = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -71,6 +74,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
 
     @Override
     public void create(T entity) throws InvalidInputException {
+        logger.info("Creating entity");
         String sql = "INSERT INTO ToDo (Title, Priority, DueDate, Description) VALUES (?,?,?,?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -80,10 +84,12 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
             logger.error("Error while creating entity", ex);
             throw new InvalidInputException("Error while creating entity");
         }
+        logger.info("Entity created successfully");
     }
 
     @Override
     public void update(T entity) throws EntityNotFoundException {
+        logger.info("Updating entity with ID " + entity.getId());
         String sql = "UPDATE ToDo SET Title = ?, Priority = ?, DueDate = ?, Description = ? WHERE Id = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -100,13 +106,14 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
 
     @Override
     public T findById(Long id) throws EntityNotFoundException {
-        logger.info("Entity with ID " + id + " found");
+        logger.info("Finding entity with ID " + id);
         String sql = "SELECT * FROM ToDo WHERE Id = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
+                    logger.info("Entity with ID " + id + " found");
                     return mapRow(resultSet);
                 } else {
                     throw new EntityNotFoundException("Entity with ID " + id + " not found");
