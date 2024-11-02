@@ -1,8 +1,10 @@
 package edu.bbte.idde.pgim2289.repository.mem;
+
 import edu.bbte.idde.pgim2289.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.model.BaseEntity;
 import edu.bbte.idde.pgim2289.repository.Dao;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,22 +21,24 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
     }
 
     @Override
-    public void create(T entity)throws InvalidInputException {
-        if(entity.getId() == null){
+    public void create(T entity) throws InvalidInputException {
+        if (entity.getId() == null) {
             entity.setId(nextId.getAndIncrement());
         }
-        if(entities.containsKey(nextId)){
-            throw new InvalidInputException("This + "+nextId+"is already taken");
+        if (entities.containsKey(nextId.get() - 1)) {
+            throw new InvalidInputException("This + " + nextId + "is already taken");
         }
         entities.put(entity.getId(), entity);
     }
+
     @Override
-    public void delete(Long ID) throws EntityNotFoundException{
-        if (!entities.containsKey(ID)) {
-            throw new EntityNotFoundException("Entity with the ID of " + ID +" is non existent");
+    public void delete(Long id) throws EntityNotFoundException {
+        if (!entities.containsKey(id)) {
+            throw new EntityNotFoundException("Entity with the ID of " + id + " is non existent");
         }
-        entities.remove(ID);
+        entities.remove(id);
     }
+
     @Override
     public void update(T entity) throws EntityNotFoundException {
 
@@ -47,9 +51,9 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
 
     @Override
     public T findById(Long id) throws EntityNotFoundException {
-        if(entities.containsKey(id)){
+        if (entities.containsKey(id)) {
             return entities.get(id);
-        }else{
+        } else {
             throw new EntityNotFoundException("Entity with the ID of " + id + " is non existent");
         }
     }

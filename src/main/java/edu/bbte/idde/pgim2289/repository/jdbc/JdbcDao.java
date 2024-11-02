@@ -12,12 +12,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class JdbcDao<T extends BaseEntity> implements Dao<T>{
-    private static HikariDataSource dataSource;
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(JdbcDao.class);
+public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
+    private static final HikariDataSource dataSource = new HikariDataSource();
+    private static final Logger logger = LoggerFactory.getLogger(JdbcDao.class);
 
     public JdbcDao() {
-        dataSource = new HikariDataSource();
+        logger.info("Creating HikariCP data source and connecting to the database");
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/toDo");
         dataSource.setUsername("root");
         dataSource.setPassword("admin");
@@ -26,47 +26,54 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T>{
 
 
     public static HikariDataSource getDataSource() {
+        logger.info("Returning HikariCP data source");
         return dataSource;
     }
 
     protected abstract T mapRow(ResultSet resultSet) throws SQLException;
+
     protected abstract void prepareInsert(PreparedStatement statement, T entity) throws SQLException;
+
     protected abstract void prepareUpdate(PreparedStatement statement, T entity) throws SQLException;
+
     @Override
     public Collection<T> findAll() {
-        Collection <T> toDos = new ArrayList<>();
+        Collection<T> toDos = new ArrayList<>();
         String sql = "SELECT * FROM ToDo";
         try (Connection conn = dataSource.getConnection();
              Statement statement = conn.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)){
+             ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 toDos.add(mapRow(resultSet));
-        }
+            }
         } catch (SQLException ex) {
             logger.error("Error while executing SQL query", ex);
         }
+        logger.info("Returning all entities");
         return toDos;
     }
 
     @Override
-    public void delete(Long ID) throws EntityNotFoundException {
+    public void delete(Long id) throws EntityNotFoundException {
         String sql = "DELETE FROM ToDo WHERE Id = ?";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql)){
-            statement.setLong(1, ID);
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setLong(1, id);
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected == 0) {
-                throw new EntityNotFoundException("Entity with ID " + ID + " not found");
+                throw new EntityNotFoundException("Entity with ID " + id + " not found");
             }
         } catch (SQLException ex) {
-            logger.error("Error while deleting entity with ID " + ID, ex);
+            logger.error("Error while deleting entity with ID " + id, ex);
         }
+        logger.info("Entity with ID " + id + " deleted");
     }
+
     @Override
     public void create(T entity) throws InvalidInputException {
         String sql = "INSERT INTO ToDo (Title, Priority, DueDate, Description) VALUES (?,?,?,?)";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql)){
+             PreparedStatement statement = conn.prepareStatement(sql)) {
             prepareInsert(statement, entity);
             statement.executeUpdate();
         } catch (SQLException ex) {
@@ -79,8 +86,8 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T>{
     public void update(T entity) throws EntityNotFoundException {
         String sql = "UPDATE ToDo SET Title = ?, Priority = ?, DueDate = ?, Description = ? WHERE Id = ?";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql)){
-             prepareUpdate(statement, entity);
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            prepareUpdate(statement, entity);
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected == 0) {
                 throw new EntityNotFoundException("Entity with ID " + entity.getId() + " not found");
@@ -88,15 +95,17 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T>{
         } catch (SQLException ex) {
             logger.error("Error while updating entity with ID " + entity.getId(), ex);
         }
+        logger.info("Entity with ID " + entity.getId() + " updated");
     }
 
     @Override
     public T findById(Long id) throws EntityNotFoundException {
+        logger.info("Entity with ID " + id + " found");
         String sql = "SELECT * FROM ToDo WHERE Id = ?";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql)){
+             PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setLong(1, id);
-            try (ResultSet resultSet = statement.executeQuery()){
+            try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return mapRow(resultSet);
                 } else {

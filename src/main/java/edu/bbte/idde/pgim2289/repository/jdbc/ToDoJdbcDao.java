@@ -14,20 +14,20 @@ import java.util.Collection;
 
 public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
 
+    private static final Logger logger = LoggerFactory.getLogger(ToDoJdbcDao.class);
+
     @Override
     public Collection<ToDo> findByPriority(Integer priority) {
-        Collection <ToDo> todos = new ArrayList<>();
+        Collection<ToDo> todos = new ArrayList<>();
         String sql = "SELECT * FROM ToDo WHERE Priority = ?";
-        try (Connection conn = getDataSource().getConnection())
-        {
+        try (Connection conn = getDataSource().getConnection()) {
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1,priority);
+            statement.setInt(1, priority);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 todos.add(mapRow(resultSet));
             }
-        }catch (SQLException ex) {
-            Logger logger = logger = (Logger) LoggerFactory.getLogger(ToDoJdbcDao.class);;
+        } catch (SQLException ex) {
             logger.error("Error while executing SQL query", ex);
         }
         return todos;
