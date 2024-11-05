@@ -1,5 +1,6 @@
 package edu.bbte.idde.pgim2289.repository.jdbc;
 
+import edu.bbte.idde.pgim2289.exceptions.DatabaseException;
 import edu.bbte.idde.pgim2289.model.ToDo;
 import edu.bbte.idde.pgim2289.repository.ToDoDao;
 import org.slf4j.Logger;
@@ -15,13 +16,14 @@ import java.util.Collection;
 public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
 
     private static final Logger logger = LoggerFactory.getLogger(ToDoJdbcDao.class);
+    private static final String tableName = "ToDo";
 
     @Override
     public Collection<ToDo> findByPriority(Integer priority) {
         logger.info("Finding all entities with priority " + priority);
         Collection<ToDo> todos = new ArrayList<>();
-        String sql = "SELECT * FROM ToDo WHERE Priority = ?";
-        try (Connection conn = getDataSource().getConnection()) {
+        String sql = "SELECT * FROM " + tableName + " WHERE Priority = ?";
+        try (Connection conn = DataSourceFactory.getDataSource().getConnection()) {
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, priority);
             ResultSet resultSet = statement.executeQuery();
@@ -30,6 +32,7 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
             }
         } catch (SQLException ex) {
             logger.error("Error while executing SQL query", ex);
+            throw new DatabaseException("Error while finding all entities with priority " + priority, ex);
         }
         logger.info("Returning all entities with priority " + priority);
         return todos;
