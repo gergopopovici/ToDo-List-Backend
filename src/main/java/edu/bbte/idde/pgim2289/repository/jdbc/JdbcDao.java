@@ -114,7 +114,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
             }
         } catch (SQLException ex) {
             logger.error("Error while finding entity with ID " + id, ex);
-            throw new EntityNotFoundException("Error while finding entity with ID " + id);
+            throw new DatabaseException("Error while finding by ID", ex);
         }
     }
 
