@@ -2,16 +2,17 @@ package edu.bbte.idde.pgim2289.model;
 
 import java.util.Date;
 
-public class ToDo extends BaseEntity{
+public class ToDo extends BaseEntity {
     private String title;
     private String description;
     private Date dueDate;
     private Integer priority;
 
-    public ToDo(){
+    public ToDo() {
         super();
     }
-    public ToDo(Long id, String title, String description,Date dueDate, Integer priority){
+
+    public ToDo(Long id, String title, String description, Date dueDate, Integer priority) {
         super(id);
         this.dueDate = dueDate;
         this.title = title;
@@ -53,12 +54,12 @@ public class ToDo extends BaseEntity{
 
     @Override
     public String toString() {
-        return "ToDo{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", date=" + dueDate +
-                ", priority=" + priority +
-                ", id=" + id +
-                '}';
+        return "ToDo{"
+                + "title='" + title + '\''
+                + ", description='" + description + '\''
+                + ", date=" + dueDate
+                + ", priority=" + priority
+                + ", id=" + id
+                + '}';
     }
 }
