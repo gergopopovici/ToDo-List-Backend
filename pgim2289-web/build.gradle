@@ -5,7 +5,8 @@ dependencies {
     implementation project(':pgim2289-backend')
     // https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api
     compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0'
-
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.18.1'
 }
 /**
  * Megadja a Tomcat URL alapot.
