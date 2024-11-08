@@ -16,6 +16,7 @@ public class DataSourceFactory {
             dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/toDo");
             dataSource.setUsername("root");
             dataSource.setPassword("admin");
+            dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
             dataSource.setMaximumPoolSize(15);
             logger.info("HikariCP data source created and connected to the database");
         }
