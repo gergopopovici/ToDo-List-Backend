@@ -3,7 +3,6 @@ package edu.bbte.idde.pgim2289.backend.repository.jdbc;
 import com.zaxxer.hikari.HikariDataSource;
 import edu.bbte.idde.pgim2289.backend.exceptions.DatabaseException;
 import edu.bbte.idde.pgim2289.backend.exceptions.EntityNotFoundException;
-import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.BaseEntity;
 import edu.bbte.idde.pgim2289.backend.repository.Dao;
 import org.slf4j.Logger;
@@ -70,7 +69,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
     }
 
     @Override
-    public void create(T entity) throws InvalidInputException {
+    public void create(T entity) {
         logger.info("Creating entity");
         String columns = String.join(", ", getColumnNames());
         String placeholders = String.join(", ", Collections.nCopies(getColumnNames().size(), "?"));

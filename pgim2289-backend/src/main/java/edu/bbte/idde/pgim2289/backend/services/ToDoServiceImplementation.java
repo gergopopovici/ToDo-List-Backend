@@ -7,6 +7,7 @@ import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
 
 import java.util.Collection;
+import java.util.Date;
 
 public class ToDoServiceImplementation implements ToDoService {
     private final ToDoDao toDoDao;
@@ -15,14 +16,42 @@ public class ToDoServiceImplementation implements ToDoService {
         toDoDao = DaoFactory.getInstance().getToDoDao();
     }
 
+
     @Override
     public void create(ToDo toDo) throws InvalidInputException {
-        if (toDo.getTitle() == null || toDo.getTitle().isBlank()
-                || toDo.getDescription() == null || toDo.getDescription().isBlank()
-                || toDo.getDate() == null) {
-            throw new InvalidInputException("Invalid input: title, description, and due date cannot be empty.");
-        }
+        validateToDoInput(toDo);
         toDoDao.create(toDo);
+    }
+
+    private void validateToDoInput(ToDo toDo) throws InvalidInputException {
+        validateTitle(toDo.getTitle());
+        validateDescription(toDo.getDescription());
+        validateDate(toDo.getDate());
+        validatePriority(toDo.getPriority());
+    }
+
+    private void validateTitle(String title) throws InvalidInputException {
+        if (title == null || title.isBlank()) {
+            throw new InvalidInputException("Invalid input: title cannot be empty.");
+        }
+    }
+
+    private void validateDescription(String description) throws InvalidInputException {
+        if (description == null || description.isBlank()) {
+            throw new InvalidInputException("Invalid input: description cannot be empty.");
+        }
+    }
+
+    private void validateDate(Date date) throws InvalidInputException {
+        if (date == null) {
+            throw new InvalidInputException("Invalid input: due date cannot be empty.");
+        }
+    }
+
+    private void validatePriority(Integer priority) throws InvalidInputException {
+        if (priority == null || priority < 1 || priority > 3) {
+            throw new InvalidInputException("Invalid input: priority must be between 1 and 3.");
+        }
     }
 
     @Override

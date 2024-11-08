@@ -1,6 +1,7 @@
 package edu.bbte.idde.pgim2289.backend.repository.jdbc;
 
 import edu.bbte.idde.pgim2289.backend.exceptions.DatabaseException;
+import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
@@ -51,15 +53,48 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
     }
 
     @Override
-    protected void prepareInsert(PreparedStatement statement, ToDo entity) throws SQLException {
+    protected void prepareInsert(PreparedStatement statement, ToDo entity) throws SQLException, InvalidInputException {
+        validateToDoInput(entity);
         statement.setString(1, entity.getTitle());
         statement.setInt(2, entity.getPriority());
         statement.setDate(3, new java.sql.Date(entity.getDate().getTime()));
         statement.setString(4, entity.getDescription());
     }
 
+    private void validateToDoInput(ToDo toDo) throws InvalidInputException {
+        validateTitle(toDo.getTitle());
+        validateDescription(toDo.getDescription());
+        validateDate(toDo.getDate());
+        validatePriority(toDo.getPriority());
+    }
+
+    private void validateTitle(String title) throws InvalidInputException {
+        if (title == null || title.isBlank()) {
+            throw new InvalidInputException("Invalid input: title cannot be empty.");
+        }
+    }
+
+    private void validateDescription(String description) throws InvalidInputException {
+        if (description == null || description.isBlank()) {
+            throw new InvalidInputException("Invalid input: description cannot be empty.");
+        }
+    }
+
+    private void validateDate(Date date) throws InvalidInputException {
+        if (date == null) {
+            throw new InvalidInputException("Invalid input: due date cannot be empty.");
+        }
+    }
+
+    private void validatePriority(Integer priority) throws InvalidInputException {
+        if (priority == null || priority < 1 || priority > 3) {
+            throw new InvalidInputException("Invalid input: priority must be between 1 and 3.");
+        }
+    }
+
     @Override
     protected void prepareUpdate(PreparedStatement statement, ToDo entity) throws SQLException {
+        validateToDoInput(entity);
         statement.setString(1, entity.getTitle());
         statement.setInt(2, entity.getPriority());
         statement.setDate(3, new java.sql.Date(entity.getDate().getTime()));
