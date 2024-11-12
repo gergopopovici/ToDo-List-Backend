@@ -1,6 +1,7 @@
 package edu.bbte.idde.pgim2289.web.servlet;
 
 import com.github.jknack.handlebars.Template;
+import edu.bbte.idde.pgim2289.backend.exceptions.DatabaseException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.jdbc.ToDoJdbcDao;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,10 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @WebServlet("/webserver/handlebars")
 public class ToDoHandleBars extends HttpServlet {
 
-    private final ToDoJdbcDao toDoDao = new ToDoJdbcDao();
+    private final transient ToDoJdbcDao toDoDao = new ToDoJdbcDao();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response) throws IOException, DatabaseException {
 
         Map<String, Object> model = new ConcurrentHashMap<>();
         model.put("contextPath", request.getContextPath());
@@ -33,7 +35,7 @@ public class ToDoHandleBars extends HttpServlet {
         } catch (IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("{\"error\":\"Template rendering error\"}");
-        } catch (Exception e) {
+        } catch (DatabaseException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("{\"error\":\"Unexpected error\"}");
         }

@@ -15,8 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @WebServlet("/webserver/login")
 public class LoginServlet extends HttpServlet {
-    private static final String Username = "admin";
-    private static final String Password = "admin";
+    private static final String USERNAME = "admin";
+    private static final String PASSWORD = "admin";
     private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
     @Override
@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         logger.info("username: " + username + " password: " + password);
 
-        if (Username.equals(username) && Password.equals(password)) {
+        if (USERNAME.equals(username) && PASSWORD.equals(password)) {
             HttpSession session = request.getSession();
             session.setAttribute("username", username);
             logger.info("User logged in: " + username);

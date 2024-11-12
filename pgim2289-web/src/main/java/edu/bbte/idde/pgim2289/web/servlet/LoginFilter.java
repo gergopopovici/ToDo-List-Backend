@@ -12,14 +12,17 @@ import java.io.IOException;
 @WebFilter("/webserver/handlebars")
 public class LoginFilter extends HttpFilter {
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        HttpSession session = httpRequest.getSession(false);
-        if (session != null && session.getAttribute("username") != null) {
-            chain.doFilter(request, response);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        if (request instanceof HttpServletRequest httpRequest && response instanceof HttpServletResponse httpResponse) {
+            HttpSession session = httpRequest.getSession(false);
+            if (session != null && session.getAttribute("username") != null) {
+                chain.doFilter(request, response);
+            } else {
+                httpResponse.sendRedirect(httpRequest.getContextPath() + "/webserver/login");
+            }
         } else {
-            httpResponse.sendRedirect(httpRequest.getContextPath() + "/webserver/login");
+            throw new ServletException("Non-HTTP request or response");
         }
     }
 }
