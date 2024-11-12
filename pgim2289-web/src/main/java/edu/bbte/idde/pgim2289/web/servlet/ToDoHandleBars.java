@@ -22,6 +22,7 @@ public class ToDoHandleBars extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         Map<String, Object> model = new ConcurrentHashMap<>();
+        model.put("contextPath", request.getContextPath());
 
         try {
             Collection<ToDo> todos = toDoDao.findAll();
