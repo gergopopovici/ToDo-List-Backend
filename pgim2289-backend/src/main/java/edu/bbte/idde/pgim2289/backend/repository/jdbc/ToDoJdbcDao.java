@@ -7,6 +7,7 @@ import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,7 +34,7 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
             while (resultSet.next()) {
                 todos.add(mapRow(resultSet));
             }
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             logger.error("Error while executing SQL query", ex);
             throw new DatabaseException("Error while finding all entities with priority " + priority, ex);
         }

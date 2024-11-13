@@ -13,6 +13,7 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -31,7 +32,7 @@ public class ToDoListUI {
     private JTextField dueDateField;
     private JComboBox<Integer> priorityComboBox;
 
-    public ToDoListUI() {
+    public ToDoListUI() throws IOException {
         toDoService = new ToDoServiceImplementation();
         JFrame frame = createFrame();
         JPanel inputPanel = createInputPanel();
@@ -243,7 +244,7 @@ public class ToDoListUI {
         priorityComboBox.setSelectedIndex(0);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new ToDoListUI();
     }
 }

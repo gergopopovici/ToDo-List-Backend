@@ -8,6 +8,7 @@ import edu.bbte.idde.pgim2289.backend.repository.Dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +16,16 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
-    private static final HikariDataSource dataSource = DataSourceFactory.getDataSource();
+    private static final HikariDataSource dataSource;
+
+    static {
+        try {
+            dataSource = DataSourceFactory.getDataSource();
+        } catch (IOException e) {
+            throw new DatabaseException("Error creating HikariCP data source", e);
+        }
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(JdbcDao.class);
 
     protected JdbcDao() {
