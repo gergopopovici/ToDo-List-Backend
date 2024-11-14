@@ -6,14 +6,13 @@ import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 
 public class ToDoServiceImplementation implements ToDoService {
     private final ToDoDao toDoDao;
 
-    public ToDoServiceImplementation() throws IOException {
+    public ToDoServiceImplementation() {
         toDoDao = DaoFactory.getInstance().getToDoDao();
     }
 

@@ -1,6 +1,7 @@
 package edu.bbte.idde.pgim2289.backend.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -17,7 +18,8 @@ public class ConfigLoader {
             throw new IOException("Unknown profile: " + profile);
         }
 
-        try (InputStream inputStream = ConfigLoader.class.getClassLoader().getResourceAsStream(configFileName)) {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(configFileName)) {
             if (inputStream == null) {
                 throw new IOException("Configuration file not found: " + configFileName);
             }

@@ -32,7 +32,7 @@ public class ToDoListUI {
     private JTextField dueDateField;
     private JComboBox<Integer> priorityComboBox;
 
-    public ToDoListUI() throws IOException {
+    public ToDoListUI() {
         toDoService = new ToDoServiceImplementation();
         JFrame frame = createFrame();
         JPanel inputPanel = createInputPanel();
@@ -45,7 +45,6 @@ public class ToDoListUI {
         frame.add(centerPanel, BorderLayout.CENTER);
         frame.add(new JScrollPane(outputArea), BorderLayout.EAST);
         frame.setVisible(true);
-
         refreshTodoList(0);
     }
 

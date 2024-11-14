@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.bbte.idde.pgim2289.backend.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
-import edu.bbte.idde.pgim2289.backend.repository.jdbc.ToDoJdbcDao;
+import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
+import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import java.util.Collection;
 
 @WebServlet("/todos")
 public class ToDoJson extends HttpServlet {
-    private final transient ToDoJdbcDao toDoDao = new ToDoJdbcDao();
+    private final transient ToDoDao toDoDao = DaoFactory.getInstance().getToDoDao();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
