@@ -25,6 +25,7 @@ public class ToDoJson extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String idParam = request.getParameter("id");
+
         response.setContentType("application/json");
 
         if (idParam != null) {
