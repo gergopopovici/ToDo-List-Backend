@@ -3,8 +3,8 @@ package edu.bbte.idde.pgim2289.web.servlet;
 import com.github.jknack.handlebars.Template;
 import edu.bbte.idde.pgim2289.backend.exceptions.DatabaseException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
-import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
-import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
+import edu.bbte.idde.pgim2289.backend.services.ToDoService;
+import edu.bbte.idde.pgim2289.backend.services.ToDoServiceImplementation;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @WebServlet("/webserver/handlebars")
 public class ToDoHandleBars extends HttpServlet {
 
-    private final transient ToDoDao toDoDao = DaoFactory.getInstance().getToDoDao();
+    private final transient ToDoService toDoService = new ToDoServiceImplementation();
 
     @Override
     protected void doGet(HttpServletRequest request,
@@ -28,7 +28,7 @@ public class ToDoHandleBars extends HttpServlet {
         model.put("contextPath", request.getContextPath());
 
         try {
-            Collection<ToDo> todos = toDoDao.findAll();
+            Collection<ToDo> todos = toDoService.findAll();
             model.put("todos", todos);
             Template template = HandleBarsFactory.getTemplate("todoList");
             response.getWriter().println(template.apply(model));
