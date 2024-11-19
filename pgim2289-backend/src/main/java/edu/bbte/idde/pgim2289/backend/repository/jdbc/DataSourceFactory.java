@@ -16,8 +16,7 @@ public class DataSourceFactory {
     public static synchronized HikariDataSource getDataSource() throws IOException {
         if (dataSource == null) {
             try {
-                String profile = System.getenv().getOrDefault("APP_PROFILE", "jdbc");
-                Config config = ConfigLoader.loadConfig(profile);
+                Config config = ConfigLoader.loadConfig();
                 dataSource = new HikariDataSource();
                 logger.info("Creating HikariCP data source and connecting to the database");
                 dataSource.setJdbcUrl(config.getJdbcUrl());

@@ -16,4 +16,6 @@ public interface ToDoService {
     void update(ToDo toDo) throws EntityNotFoundException, InvalidInputException;
 
     Collection<ToDo> findByPriority(Integer priority);
+
+    ToDo findById(Long id);
 }

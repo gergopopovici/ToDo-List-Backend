@@ -79,4 +79,9 @@ public class ToDoServiceImplementation implements ToDoService {
         return toDoDao.findByPriority(priority);
     }
 
+    @Override
+    public ToDo findById(Long id) {
+        return toDoDao.findById(id);
+    }
+
 }

@@ -1,11 +1,13 @@
 package edu.bbte.idde.pgim2289.web.servlet;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.bbte.idde.pgim2289.backend.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
-import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
-import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
+import edu.bbte.idde.pgim2289.backend.services.ToDoService;
+import edu.bbte.idde.pgim2289.backend.services.ToDoServiceImplementation;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +19,7 @@ import java.util.Collection;
 
 @WebServlet("/todos")
 public class ToDoJson extends HttpServlet {
-    private final transient ToDoDao toDoDao = DaoFactory.getInstance().getToDoDao();
+    private final transient ToDoService toDoService = new ToDoServiceImplementation();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -28,95 +30,117 @@ public class ToDoJson extends HttpServlet {
         if (idParam != null) {
             try {
                 Long id = Long.parseLong(idParam);
-                ToDo todo = toDoDao.findById(id);
+                ToDo todo = toDoService.findById(id);
                 if (todo != null) {
-                    response.getWriter().println(objectMapper.writeValueAsString(todo));
+                    objectMapper.writeValue(response.getWriter(), todo);
                 }
             } catch (NumberFormatException e) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().println("{\"error\":\"Invalid ID format\"}");
+                Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+                objectMapper.writeValue(response.getWriter(), error);
             } catch (EntityNotFoundException e) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                response.getWriter().println("{\"error\":\"Entity with ID "
-                        + request.getParameter("id") + " not found\"}");
+                Error error = new Error(HttpServletResponse.SC_NOT_FOUND, "Entity with ID "
+                        + request.getParameter("id") + " not found");
+                objectMapper.writeValue(response.getWriter(), error);
             }
         } else {
-            Collection<ToDo> todos = toDoDao.findAll();
-            response.getWriter().println(objectMapper.writeValueAsString(todos));
+            Collection<ToDo> todos = toDoService.findAll();
+            objectMapper.writeValue(response.getWriter(), todos);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
         try (BufferedReader reader = request.getReader()) {
             ToDo todo = objectMapper.readValue(reader, ToDo.class);
-            toDoDao.create(todo);
+            toDoService.create(todo);
             response.setStatus(HttpServletResponse.SC_CREATED);
-            response.getWriter().println(objectMapper.writeValueAsString(todo));
+            objectMapper.writeValue(response.getWriter(), todo);
         } catch (InvalidInputException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("{\"error\":\"Invalid input\"}");
+            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
+            objectMapper.writeValue(response.getWriter(), error);
+        } catch (JsonMappingException | JsonParseException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
+            objectMapper.writeValue(response.getWriter(), error);
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
         String idParam = request.getParameter("id");
         if (idParam == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("{\"error\":\"ID parameter is required\"}");
+            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "ID parameter is required");
+            objectMapper.writeValue(response.getWriter(), error);
             return;
         }
         try {
             Long id = Long.parseLong(idParam);
-            ToDo todo = toDoDao.findById(id);
+            ToDo todo = toDoService.findById(id);
             if (todo != null) {
-                toDoDao.delete(id);
+                toDoService.delete(id);
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("{\"error\":\"Invalid ID format\"}");
+            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+            objectMapper.writeValue(response.getWriter(), error);
         } catch (EntityNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().println("{\"error\":\"Entity with ID "
-                    + request.getParameter("id") + " not found\"}");
+            Error error = new Error(HttpServletResponse.SC_NOT_FOUND, "Entity with ID "
+                    + request.getParameter("id") + " not found");
+            objectMapper.writeValue(response.getWriter(), error);
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
         String idParam = request.getParameter("id");
         if (idParam == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("{\"error\":\"ID parameter is required\"}");
+            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "ID parameter is required");
+            objectMapper.writeValue(response.getWriter(), error);
             return;
         }
 
         try {
             Long id = Long.parseLong(idParam);
-            ToDo oldToDo = toDoDao.findById(id);
+            ToDo oldToDo = toDoService.findById(id);
             if (oldToDo != null) {
                 try (BufferedReader reader = request.getReader()) {
                     ToDo updatedToDo = objectMapper.readValue(reader, ToDo.class);
                     updatedToDo.setId(id);
-                    toDoDao.update(updatedToDo);
-                    response.getWriter().println(objectMapper.writeValueAsString(updatedToDo));
+                    toDoService.update(updatedToDo);
+                    objectMapper.writeValue(response.getWriter(), updatedToDo);
+                } catch (JsonMappingException | JsonParseException e) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
+                    objectMapper.writeValue(response.getWriter(), error);
                 } catch (IOException e) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.getWriter().println("{\"error\":\"Invalid input\"}");
+                    Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
+                    objectMapper.writeValue(response.getWriter(), error);
                 }
             }
         } catch (EntityNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().println("{\"error\":\"Entity with ID "
-                    + request.getParameter("id") + " not found\"}");
+            Error error = new Error(HttpServletResponse.SC_NOT_FOUND, "Entity with ID "
+                    + request.getParameter("id") + " not found");
+            objectMapper.writeValue(response.getWriter(), error);
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("{\"error\":\"Invalid ID format\"}");
+            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+            objectMapper.writeValue(response.getWriter(), error);
         } catch (InvalidInputException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("{\"error\":\"Invalid input\"}");
+            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
+            objectMapper.writeValue(response.getWriter(), error);
         }
     }
 }

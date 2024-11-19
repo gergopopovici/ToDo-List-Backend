@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ConfigLoader {
-    public static Config loadConfig(String profile) throws IOException {
+    public static Config loadConfig() throws IOException {
+        String profile = System.getenv().getOrDefault("APP_PROFILE", "jdbc");
         ObjectMapper objectMapper = new ObjectMapper();
         String configFileName;
 

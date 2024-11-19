@@ -18,8 +18,7 @@ public abstract class DaoFactory {
     public static synchronized DaoFactory getInstance() {
         if (instance == null) {
             try {
-                String profile = System.getenv().getOrDefault("APP_PROFILE", "jdbc");
-                Config config = ConfigLoader.loadConfig(profile);
+                Config config = ConfigLoader.loadConfig();
                 if ("inMemory".equalsIgnoreCase(config.getDaoType())) {
                     instance = new MemDaoFactory();
                     logger.info("Creating MemDaoFactory");

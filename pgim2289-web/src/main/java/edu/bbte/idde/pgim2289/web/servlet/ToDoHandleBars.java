@@ -33,12 +33,11 @@ public class ToDoHandleBars extends HttpServlet {
             Template template = HandleBarsFactory.getTemplate("todoList");
             response.getWriter().println(template.apply(model));
 
-        } catch (IOException e) {
+        } catch (IOException | DatabaseException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().println("{\"error\":\"Template rendering error\"}");
-        } catch (DatabaseException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().println("{\"error\":\"Unexpected error\"}");
+            model.put("errorMessage", "An unexpected error occurred while processing your request{}.");
+            Template errorTemplate = HandleBarsFactory.getTemplate("error");
+            response.getWriter().println(errorTemplate.apply(model));
         }
     }
 }
