@@ -1,1 +1,5 @@
 rootProject.name = 'abcd1234-idde'
+include 'pgim2289-backend'
+include 'pgim2289-desktop'
+include 'pgim2289-web'
+

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo List</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<h1>ToDo List</h1>
+<a href="{{contextPath}}/webserver/logout">Logout</a>
+<ul>
+    {{#each todos}}
+        <li>ID: {{this.id}}, Title: {{this.title}}, Description: {{this.description}},DueDate:{{this.date}},
+            Priority:{{this.priority}}</li>
+    {{/each}}
+</ul>
+</body>
+</html>
