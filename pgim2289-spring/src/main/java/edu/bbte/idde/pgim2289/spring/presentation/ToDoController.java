@@ -1,6 +1,7 @@
 package edu.bbte.idde.pgim2289.spring.presentation;
 
-import edu.bbte.idde.pgim2289.spring.dto.ToDoDTO;
+import edu.bbte.idde.pgim2289.spring.dto.RequestToDoDTO;
+import edu.bbte.idde.pgim2289.spring.dto.ResponseToDoDTO;
 import edu.bbte.idde.pgim2289.spring.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.mapper.ToDoMapper;
@@ -24,24 +25,26 @@ public class ToDoController {
         this.toDoMapper = toDoMapper;
     }
     @GetMapping
-    public Collection<ToDoDTO>getAllToDos(){
+    public Collection<ResponseToDoDTO> getAllToDos() {
         return toDoService.findAll().stream()
                 .map(toDoMapper::toDTO)
                 .toList();
     }
+
     @GetMapping("/{id}")
-    public ToDoDTO getToDoById(@PathVariable Long id){
-        return toDoMapper.toDTO(toDoService.findById(id));
+    public ResponseToDoDTO getToDoById(@PathVariable Long id){
+        ToDo toDo = toDoService.findById(id);
+        return toDoMapper.toDTO(toDo);
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createTodo(@RequestBody ToDoDTO toDoDTO) throws InvalidInputException {
-        ToDo toDo = toDoMapper.toEntity(toDoDTO);
+    public void createTodo(@RequestBody RequestToDoDTO requestToDoDTO) throws InvalidInputException {
+        ToDo toDo = toDoMapper.toEntity(requestToDoDTO);
         toDoService.create(toDo);
     }
     @PutMapping("/{id}")
-    public void updateTodo(@PathVariable Long id, @RequestBody ToDoDTO toDoDTO) throws EntityNotFoundException, InvalidInputException {
-        ToDo updatedToDo = toDoMapper.toEntity(toDoDTO);
+    public void updateTodo(@PathVariable Long id, @RequestBody RequestToDoDTO requestToDoDTO) throws EntityNotFoundException, InvalidInputException {
+        ToDo updatedToDo = toDoMapper.toEntity(requestToDoDTO);
         updatedToDo.setId(id);
         toDoService.update(updatedToDo);
     }
@@ -50,12 +53,5 @@ public class ToDoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTodoById(@PathVariable Long id) throws EntityNotFoundException {
         toDoService.delete(id);
-    }
-
-    @GetMapping("/search")
-    public Collection<ToDoDTO> getTodosByPriority(@RequestParam Integer priority) {
-        return toDoService.findByPriority(priority).stream()
-                .map(toDoMapper::toDTO)
-                .toList();
     }
 }

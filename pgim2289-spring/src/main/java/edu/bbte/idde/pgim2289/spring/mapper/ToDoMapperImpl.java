@@ -1,6 +1,7 @@
 package edu.bbte.idde.pgim2289.spring.mapper;
 
-import edu.bbte.idde.pgim2289.spring.dto.ToDoDTO;
+import edu.bbte.idde.pgim2289.spring.dto.RequestToDoDTO;
+import edu.bbte.idde.pgim2289.spring.dto.ResponseToDoDTO;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import org.springframework.stereotype.Component;
 
@@ -8,27 +9,29 @@ import org.springframework.stereotype.Component;
 public class ToDoMapperImpl implements ToDoMapper {
 
     @Override
-    public ToDo toEntity(ToDoDTO toDoDTO) {
-        if (toDoDTO == null) {
+    public ToDo toEntity(RequestToDoDTO requestToDoDTO) {
+        if (requestToDoDTO == null) {
             return null;
         }
         ToDo toDo = new ToDo();
-        toDo.setId(toDoDTO.getid());
-        toDo.setTitle(toDoDTO.getTitle());
-        toDo.setDescription(toDoDTO.getDescription());
+        toDo.setId(requestToDoDTO.getId());
+        toDo.setTitle(requestToDoDTO.getTitle());
+        toDo.setDescription(requestToDoDTO.getDescription());
+        toDo.setDate(requestToDoDTO.getDate());
         return toDo;
     }
 
     @Override
-    public ToDoDTO toDTO(ToDo toDo) {
+    public ResponseToDoDTO toDTO(ToDo toDo) {
         if (toDo == null) {
             return null;
         }
-        ToDoDTO toDoDTO = new ToDoDTO();
-        toDoDTO.setId(toDo.getId());
-        toDoDTO.setTitle(toDo.getTitle());
-        toDoDTO.setDescription(toDo.getDescription());
-        return toDoDTO;
+        ResponseToDoDTO responseToDoDTO = new ResponseToDoDTO();
+        responseToDoDTO.setId(toDo.getId());
+        responseToDoDTO.setTitle(toDo.getTitle());
+        responseToDoDTO.setDescription(toDo.getDescription());
+        responseToDoDTO.setDate(toDo.getDate());
+        return responseToDoDTO;
     }
 }
 
