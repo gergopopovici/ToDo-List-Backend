@@ -18,6 +18,7 @@ public class ToDoMapperImpl implements ToDoMapper {
         toDo.setTitle(requestToDoDTO.getTitle());
         toDo.setDescription(requestToDoDTO.getDescription());
         toDo.setDate(requestToDoDTO.getDate());
+        toDo.setPriority(requestToDoDTO.getPriority());
         return toDo;
     }
 
@@ -31,6 +32,7 @@ public class ToDoMapperImpl implements ToDoMapper {
         responseToDoDTO.setTitle(toDo.getTitle());
         responseToDoDTO.setDescription(toDo.getDescription());
         responseToDoDTO.setDate(toDo.getDate());
+        responseToDoDTO.setPriority(toDo.getPriority());
         return responseToDoDTO;
     }
 }

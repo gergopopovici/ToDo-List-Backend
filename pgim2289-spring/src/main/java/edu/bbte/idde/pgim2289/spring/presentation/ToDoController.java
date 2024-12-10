@@ -24,6 +24,7 @@ public class ToDoController {
         this.toDoService = toDoService;
         this.toDoMapper = toDoMapper;
     }
+
     @GetMapping
     public Collection<ResponseToDoDTO> getAllToDos() {
         return toDoService.findAll().stream()
@@ -32,26 +33,34 @@ public class ToDoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseToDoDTO getToDoById(@PathVariable Long id){
+    public ResponseToDoDTO getToDoById(@PathVariable Long id) {
         ToDo toDo = toDoService.findById(id);
         return toDoMapper.toDTO(toDo);
     }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createTodo(@RequestBody RequestToDoDTO requestToDoDTO) throws InvalidInputException {
+    public ResponseToDoDTO createTodo(@RequestBody RequestToDoDTO
+            requestToDoDTO) throws InvalidInputException {
         ToDo toDo = toDoMapper.toEntity(requestToDoDTO);
         toDoService.create(toDo);
+        return toDoMapper.toDTO(toDo);
     }
+
     @PutMapping("/{id}")
-    public void updateTodo(@PathVariable Long id, @RequestBody RequestToDoDTO requestToDoDTO) throws EntityNotFoundException, InvalidInputException {
+    public ResponseToDoDTO updateTodo(@PathVariable Long id,
+           @RequestBody RequestToDoDTO requestToDoDTO) throws EntityNotFoundException,
+            InvalidInputException {
         ToDo updatedToDo = toDoMapper.toEntity(requestToDoDTO);
         updatedToDo.setId(id);
         toDoService.update(updatedToDo);
+        return toDoMapper.toDTO(updatedToDo);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTodoById(@PathVariable Long id) throws EntityNotFoundException {
+    public void deleteTodoById(@PathVariable Long id)
+            throws EntityNotFoundException {
         toDoService.delete(id);
     }
 }

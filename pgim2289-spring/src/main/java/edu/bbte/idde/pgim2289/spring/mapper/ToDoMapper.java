@@ -9,5 +9,6 @@ import org.mapstruct.Mapper;
 public interface ToDoMapper {
 
     ToDo toEntity(RequestToDoDTO requestToDoDTO);
+
     ResponseToDoDTO toDTO(ToDo toDo);
 }
