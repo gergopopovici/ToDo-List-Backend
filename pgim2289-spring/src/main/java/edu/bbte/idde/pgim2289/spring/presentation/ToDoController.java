@@ -63,4 +63,10 @@ public class ToDoController {
             throws EntityNotFoundException {
         toDoService.delete(id);
     }
+    @GetMapping("/priority/{priority}")
+    public Collection<ResponseToDoDTO> getToDosByPriority(@PathVariable Integer priority) {
+        return toDoService.findByPriority(priority).stream()
+                .map(toDoMapper::toDTO)
+                .toList();
+    }
 }

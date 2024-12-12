@@ -6,7 +6,7 @@ import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ToDoMapperImpl implements ToDoMapper {
+public class ToDoMapperImplementation implements ToDoMapper {
 
     @Override
     public ToDo toEntity(RequestToDoDTO requestToDoDTO) {
