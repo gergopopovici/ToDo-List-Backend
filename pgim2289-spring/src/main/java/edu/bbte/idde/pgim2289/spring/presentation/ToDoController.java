@@ -41,7 +41,7 @@ public class ToDoController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseToDoDTO createTodo(@RequestBody RequestToDoDTO
-            requestToDoDTO) throws InvalidInputException {
+                                              requestToDoDTO) throws InvalidInputException {
         ToDo toDo = toDoMapper.toEntity(requestToDoDTO);
         toDoService.create(toDo);
         return toDoMapper.toDTO(toDo);
@@ -49,7 +49,7 @@ public class ToDoController {
 
     @PutMapping("/{id}")
     public ResponseToDoDTO updateTodo(@PathVariable Long id,
-           @RequestBody RequestToDoDTO requestToDoDTO) throws EntityNotFoundException,
+                                      @RequestBody RequestToDoDTO requestToDoDTO) throws EntityNotFoundException,
             InvalidInputException {
         ToDo updatedToDo = toDoMapper.toEntity(requestToDoDTO);
         updatedToDo.setId(id);
@@ -63,6 +63,7 @@ public class ToDoController {
             throws EntityNotFoundException {
         toDoService.delete(id);
     }
+
     @GetMapping("/priority/{priority}")
     public Collection<ResponseToDoDTO> getToDosByPriority(@PathVariable Integer priority) {
         return toDoService.findByPriority(priority).stream()
