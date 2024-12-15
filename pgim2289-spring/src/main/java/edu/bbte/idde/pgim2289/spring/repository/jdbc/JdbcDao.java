@@ -80,15 +80,27 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
         String placeholders = String.join(", ", Collections.nCopies(getColumnNames().size(), "?"));
         String sql = "INSERT INTO " + getTableName() + " (" + columns + ") VALUES (" + placeholders + ")";
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql)) {
+             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             prepareInsert(statement, entity);
             statement.executeUpdate();
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    Long generatedId = generatedKeys.getLong(1);
+                    entity.setId(generatedId);
+                    logger.info("Generated ID: " + generatedId);
+                } else {
+                    logger.warn("No ID generated for the created entity.");
+                    throw new DatabaseException("Entity creation succeeded, but no ID was generated.", null);
+                }
+            }
         } catch (SQLException ex) {
             logger.error("Error while creating entity", ex);
             throw new DatabaseException("Error while creating entity", ex);
         }
         logger.info("Entity created successfully");
     }
+
 
     @Override
     public void update(T entity) throws EntityNotFoundException {
