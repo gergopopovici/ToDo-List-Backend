@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
-    private final DataSource dataSource;
+    protected DataSource dataSource;
 
 
     private static final Logger logger = LoggerFactory.getLogger(JdbcDao.class);

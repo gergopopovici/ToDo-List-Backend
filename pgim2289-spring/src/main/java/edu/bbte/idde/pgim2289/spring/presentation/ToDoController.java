@@ -7,6 +7,7 @@ import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.mapper.ToDoMapper;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import edu.bbte.idde.pgim2289.spring.services.ToDoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.Collection;
 @RequestMapping("/api/todos")
 public class ToDoController {
     private final ToDoService toDoService;
+    @Autowired
     private final ToDoMapper toDoMapper;
 
     @Autowired
@@ -26,10 +28,16 @@ public class ToDoController {
     }
 
     @GetMapping
-    public Collection<ResponseToDoDTO> getAllToDos() {
-        return toDoService.findAll().stream()
-                .map(toDoMapper::toDTO)
-                .toList();
+    public Collection<ResponseToDoDTO> getAllToDos(@RequestParam(required = false) Integer priority) {
+        if (priority != null) {
+            return toDoService.findByPriority(priority).stream()
+                    .map(toDoMapper::toDTO)
+                    .toList();
+        } else {
+            return toDoService.findAll().stream()
+                    .map(toDoMapper::toDTO)
+                    .toList();
+        }
     }
 
     @GetMapping("/{id}")
@@ -40,7 +48,7 @@ public class ToDoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseToDoDTO createTodo(@RequestBody RequestToDoDTO
+    public ResponseToDoDTO createTodo(@Valid @RequestBody RequestToDoDTO
                                               requestToDoDTO) throws InvalidInputException {
         ToDo toDo = toDoMapper.toEntity(requestToDoDTO);
         toDoService.create(toDo);
@@ -49,7 +57,7 @@ public class ToDoController {
 
     @PutMapping("/{id}")
     public ResponseToDoDTO updateTodo(@PathVariable Long id,
-                                      @RequestBody RequestToDoDTO requestToDoDTO) throws EntityNotFoundException,
+                                      @Valid @RequestBody RequestToDoDTO requestToDoDTO) throws EntityNotFoundException,
             InvalidInputException {
         ToDo updatedToDo = toDoMapper.toEntity(requestToDoDTO);
         updatedToDo.setId(id);
@@ -62,12 +70,5 @@ public class ToDoController {
     public void deleteTodoById(@PathVariable Long id)
             throws EntityNotFoundException {
         toDoService.delete(id);
-    }
-
-    @GetMapping("/priority/{priority}")
-    public Collection<ResponseToDoDTO> getToDosByPriority(@PathVariable Integer priority) {
-        return toDoService.findByPriority(priority).stream()
-                .map(toDoMapper::toDTO)
-                .toList();
     }
 }
