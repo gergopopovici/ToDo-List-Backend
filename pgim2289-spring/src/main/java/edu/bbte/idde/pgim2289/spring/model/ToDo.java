@@ -1,11 +1,20 @@
 package edu.bbte.idde.pgim2289.spring.model;
 
+import jakarta.persistence.*;
+
 import java.util.Date;
 
+@Entity
+@Table(name = "ToDo")
 public class ToDo extends BaseEntity {
+    @Column(name = "title", nullable = false)
     private String title;
+    @Column(name = "description")
     private String description;
+    @Column(name = "due_date")
+    @Temporal(TemporalType.DATE)
     private Date dueDate;
+    @Column(name = "priority")
     private Integer priority;
 
     public ToDo() {
