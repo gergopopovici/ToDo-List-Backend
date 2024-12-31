@@ -24,7 +24,6 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
 
     private static final Logger logger = LoggerFactory.getLogger(ToDoJdbcDao.class);
     private static final String tableName = "ToDo";
-    private final DataSource dataSource;
 
     public ToDoJdbcDao(DataSource dataSource) {
         super(dataSource);

@@ -3,7 +3,7 @@ package edu.bbte.idde.pgim2289.spring.services;
 import edu.bbte.idde.pgim2289.spring.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
-import edu.bbte.idde.pgim2289.spring.repository.ToDoDao;
+import edu.bbte.idde.pgim2289.spring.repository.ToDoDaoJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -12,20 +12,20 @@ import java.util.Collection;
 import java.util.Date;
 
 @Service
-@Profile("!jpa")
-public class ToDoServiceImplementation implements ToDoService {
-    private final ToDoDao toDoDao;
+@Profile("jpa")
+public class ToDoServiceJpaImplementation implements ToDoService {
+    private final ToDoDaoJpa toDoDaoJpa;
 
     @Autowired
-    public ToDoServiceImplementation(ToDoDao toDoDao) {
-        this.toDoDao = toDoDao;
+    public ToDoServiceJpaImplementation(ToDoDaoJpa toDoDaoJpa) {
+        this.toDoDaoJpa = toDoDaoJpa;
     }
 
 
     @Override
     public void create(ToDo toDo) throws InvalidInputException {
         validateToDoInput(toDo);
-        toDoDao.create(toDo);
+        toDoDaoJpa.save(toDo);
     }
 
     private void validateToDoInput(ToDo toDo) throws InvalidInputException {
@@ -61,12 +61,12 @@ public class ToDoServiceImplementation implements ToDoService {
 
     @Override
     public Collection<ToDo> findAll() {
-        return toDoDao.findAll();
+        return toDoDaoJpa.findAll();
     }
 
     @Override
     public void delete(Long id) throws EntityNotFoundException {
-        toDoDao.delete(id);
+        toDoDaoJpa.deleteById(id);
     }
 
     @Override
@@ -76,17 +76,16 @@ public class ToDoServiceImplementation implements ToDoService {
                 || toDo.getDate() == null) {
             throw new InvalidInputException("Invalid input: title, description, and due date cannot be empty.");
         }
-        toDoDao.update(toDo);
+        toDoDaoJpa.save(toDo);
     }
 
     @Override
     public Collection<ToDo> findByPriority(Integer priority) {
-        return toDoDao.findByPriority(priority);
+        return toDoDaoJpa.findByPriority(priority);
     }
 
     @Override
     public ToDo findById(Long id) {
-        return toDoDao.findById(id);
+        return toDoDaoJpa.findById(id).orElseThrow(() -> new EntityNotFoundException("ToDo not found with id: " + id));
     }
-
 }
