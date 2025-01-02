@@ -5,7 +5,6 @@ import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.Task;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import edu.bbte.idde.pgim2289.spring.services.ToDoService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -43,13 +42,16 @@ public class ToDoTaskController {
 
     @DeleteMapping("/{taskId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTaskFromToDo(@PathVariable Long todoId, @PathVariable Long taskId) throws EntityNotFoundException {
+    public void deleteTaskFromToDo(@PathVariable Long todoId, @PathVariable Long taskId)
+            throws EntityNotFoundException {
         ToDo toDo = toDoService.findById(todoId);
 
         Task task = toDo.getTasks().stream()
                 .filter(t -> t.getId().equals(taskId))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Task with id " + taskId + " not found for ToDo with id " + todoId));
+                .orElseThrow(() -> new
+                        EntityNotFoundException("Task with id " + taskId
+                        + " not found for ToDo with id " + todoId));
 
         toDo.removeTask(task);
         toDoService.update(toDo);

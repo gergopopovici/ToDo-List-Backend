@@ -18,4 +18,6 @@ public class RequestToDoDTO {
     @Min(1)
     @Max(3)
     private Integer priority;
+    @NotNull
+    private Long userId;
 }

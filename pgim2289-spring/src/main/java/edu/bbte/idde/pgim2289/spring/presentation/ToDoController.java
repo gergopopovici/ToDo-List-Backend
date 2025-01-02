@@ -67,8 +67,14 @@ public class ToDoController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTodoById(@PathVariable Long id)
+    public void deleteTodoById(@PathVariable Long id, @RequestParam Long userId)
             throws EntityNotFoundException {
-        toDoService.delete(id);
+        toDoService.delete(id,userId);
+    }
+    @GetMapping("/user/{userId}")
+    public Collection<ResponseToDoDTO> getToDosByUserId(@PathVariable Long userId) throws EntityNotFoundException {
+        return toDoService.findByUserId(userId).stream()
+                .map(toDoMapper::toDTO)
+                .toList();
     }
 }

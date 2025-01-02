@@ -11,11 +11,13 @@ public interface ToDoService {
 
     Collection<ToDo> findAll();
 
-    void delete(Long id) throws EntityNotFoundException;
+    void delete(Long id,Long userID) throws EntityNotFoundException;
 
     void update(ToDo toDo) throws EntityNotFoundException, InvalidInputException;
 
     Collection<ToDo> findByPriority(Integer priority);
 
     ToDo findById(Long id);
+
+    Collection<ToDo> findByUserId(Long userId);
 }

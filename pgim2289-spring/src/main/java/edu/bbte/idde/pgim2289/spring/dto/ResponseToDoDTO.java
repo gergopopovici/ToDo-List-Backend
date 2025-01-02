@@ -11,4 +11,5 @@ public class ResponseToDoDTO {
     private String description;
     private Date date;
     private Integer priority;
+    private Long userId;
 }
