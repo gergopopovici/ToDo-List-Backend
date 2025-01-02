@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "ToDo")
@@ -26,22 +24,11 @@ public class ToDo extends BaseEntity {
     @Getter
     @Column(name = "priority")
     private Integer priority;
-    @Getter
-    @OneToMany(mappedBy = "toDo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Task> tasks = new ArrayList<>();
-    @JoinColumn(name = "userId",nullable = false)
+
+    @JoinColumn(name = "userId", nullable = false)
     @Getter
     @Setter
     private Long userId;
-    public void addTask(Task task) {
-        tasks.add(task);
-        task.setToDo(this);
-    }
-
-    public void removeTask(Task task) {
-        tasks.remove(task);
-        task.setToDo(null);
-    }
 
     public ToDo() {
         super();

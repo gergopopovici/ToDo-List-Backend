@@ -47,11 +47,12 @@ public class ToDoServiceJpaImplementation implements ToDoService {
     }
 
     private void validateUserId(Long userId) throws InvalidInputException {
-        if (!userJpa.existsById(userId)){
-            throw new InvalidInputException("Invalid input: " +
-                    "User with the given ID does not exist.");
+        if (!userJpa.existsById(userId)) {
+            throw new InvalidInputException("Invalid input: "
+                    + "User with the given ID does not exist.");
         }
     }
+
     private void validateTitle(String title) throws InvalidInputException {
         if (title == null || title.isBlank()) {
             throw new InvalidInputException("Invalid input: title cannot be empty.");
@@ -82,7 +83,7 @@ public class ToDoServiceJpaImplementation implements ToDoService {
     }
 
     @Override
-    public void delete(Long id,Long userId) throws EntityNotFoundException {
+    public void delete(Long id, Long userId) throws EntityNotFoundException {
         ToDo toDo = findById(id);
         if (!toDo.getUserId().equals(userId)) {
             throw new InvalidInputException("Invalid operation: Only the owner can delete this ToDo.");
@@ -92,12 +93,12 @@ public class ToDoServiceJpaImplementation implements ToDoService {
 
     @Override
     public void update(ToDo toDo) throws EntityNotFoundException, InvalidInputException {
-         validateToDoInput(toDo);
+        validateToDoInput(toDo);
         ToDo existingToDo = findById(toDo.getId());
         if (!existingToDo.getUserId().equals(toDo.getUserId())) {
             throw new InvalidInputException("Invalid input: User ID cannot be changed.");
         }
-         toDoDaoJpa.save(toDo);
+        toDoDaoJpa.save(toDo);
     }
 
     @Override
@@ -112,7 +113,7 @@ public class ToDoServiceJpaImplementation implements ToDoService {
 
     @Override
     public Collection<ToDo> findByUserId(Long userId) {
-        if(userJpa.findById(userId).isEmpty()){
+        if (userJpa.findById(userId).isEmpty()) {
             throw new EntityNotFoundException("User not found with id: " + userId);
         }
         return toDoDaoJpa.findByUserId(userId);

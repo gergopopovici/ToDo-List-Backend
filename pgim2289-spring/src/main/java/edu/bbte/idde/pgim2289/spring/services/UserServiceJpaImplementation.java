@@ -28,6 +28,16 @@ public class UserServiceJpaImplementation implements UserService {
         validateEmail(user.getEmail());
         validatePhoneNumber(user.getPhoneNumber());
         validateAdmin(user.getAdmin());
+
+        if (userJpa.findByUsername(user.getUsername()) != null) {
+            throw new InvalidInputException("User with username " + user.getUsername()
+                    + " already exists.");
+        }
+
+        if (userJpa.findByEmail(user.getEmail()) != null) {
+            throw new InvalidInputException("User with email " + user.getEmail()
+                    + " already exists.");
+        }
     }
 
     private void validateUsername(String username) throws InvalidInputException {
@@ -43,14 +53,16 @@ public class UserServiceJpaImplementation implements UserService {
     }
 
     private void validateEmail(String email) throws InvalidInputException {
-        if (email == null || email.isBlank()) {
-            throw new InvalidInputException("Invalid input: email cannot be empty.");
+        if (email == null || email.isBlank() || !email.contains("@")) {
+            throw new InvalidInputException("Invalid input: email cannot be "
+                    + "empty and it must be valid.");
         }
     }
 
     private void validatePhoneNumber(String phoneNumber) throws InvalidInputException {
-        if (phoneNumber == null || phoneNumber.isBlank()) {
-            throw new InvalidInputException("Invalid input: phone number cannot be empty.");
+        if (phoneNumber == null || !phoneNumber.matches("\\d{11}")) {
+            throw new InvalidInputException("Invalid input: phone number must "
+                    + "be 11 digits long and contain only numbers.");
         }
     }
 
@@ -63,9 +75,6 @@ public class UserServiceJpaImplementation implements UserService {
     @Override
     public void create(User user) throws InvalidInputException {
         validateUserInput(user);
-        if (userJpa.findByUsername(user.getUsername()) != null) {
-            throw new InvalidInputException("User with username " + user.getUsername() + " already exists.");
-        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userJpa.save(user);
     }
@@ -84,7 +93,8 @@ public class UserServiceJpaImplementation implements UserService {
 
     @Override
     public User findById(Long id) {
-        return userJpa.findById(id).orElseThrow(() -> new EntityNotFoundException("ToDo not found with id: " + id));
+        return userJpa.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("User not found with id: " + id));
     }
 
     @Override

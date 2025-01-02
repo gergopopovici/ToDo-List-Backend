@@ -66,7 +66,7 @@ public class ToDoServiceImplementation implements ToDoService {
     }
 
     @Override
-    public void delete(Long id,Long userID) throws EntityNotFoundException {
+    public void delete(Long id, Long userID) throws EntityNotFoundException {
         toDoDao.delete(id);
     }
 

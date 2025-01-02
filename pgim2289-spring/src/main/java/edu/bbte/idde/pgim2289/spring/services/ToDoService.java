@@ -11,7 +11,7 @@ public interface ToDoService {
 
     Collection<ToDo> findAll();
 
-    void delete(Long id,Long userID) throws EntityNotFoundException;
+    void delete(Long id, Long userID) throws EntityNotFoundException;
 
     void update(ToDo toDo) throws EntityNotFoundException, InvalidInputException;
 

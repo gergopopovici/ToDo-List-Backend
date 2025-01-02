@@ -69,8 +69,9 @@ public class ToDoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTodoById(@PathVariable Long id, @RequestParam Long userId)
             throws EntityNotFoundException {
-        toDoService.delete(id,userId);
+        toDoService.delete(id, userId);
     }
+
     @GetMapping("/user/{userId}")
     public Collection<ResponseToDoDTO> getToDosByUserId(@PathVariable Long userId) throws EntityNotFoundException {
         return toDoService.findByUserId(userId).stream()

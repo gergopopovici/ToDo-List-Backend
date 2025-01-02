@@ -12,5 +12,6 @@ import java.util.Collection;
 @Profile("jpa")
 public interface ToDoDaoJpa extends JpaRepository<ToDo, Long> {
     Collection<ToDo> findByPriority(Integer priority);
+
     Collection<ToDo> findByUserId(Long userId);
 }
