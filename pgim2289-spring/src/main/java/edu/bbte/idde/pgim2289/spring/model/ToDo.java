@@ -28,7 +28,7 @@ public class ToDo extends BaseEntity {
     private Integer priority;
     @Getter
     @OneToMany(mappedBy = "toDo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks = new ArrayList<>();
+    private final List<Task> tasks = new ArrayList<>();
 
     public void addTask(Task task) {
         tasks.add(task);

@@ -3,7 +3,6 @@ package edu.bbte.idde.pgim2289.spring.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +26,7 @@ public class Task extends BaseEntity {
     }
 
     public Task(String description, ToDo toDo) {
+        super();
         this.description = description;
         this.toDo = toDo;
     }

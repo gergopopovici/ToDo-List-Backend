@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 public interface TaskMapper {
     @IterableMapping(elementTargetType = Task.class)
     Task toEntity(RequestTaskDTO requestTaskDTO);
+
     ResponseTaskDTO toTask(Task task);
 
 }
