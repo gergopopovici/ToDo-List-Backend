@@ -39,4 +39,8 @@ public class Task extends BaseEntity {
                 + ", toDo=" + toDo
                 + '}';
     }
+
+    public void setToDo(ToDo toDo) {
+        this.toDo = toDo;
+    }
 }
