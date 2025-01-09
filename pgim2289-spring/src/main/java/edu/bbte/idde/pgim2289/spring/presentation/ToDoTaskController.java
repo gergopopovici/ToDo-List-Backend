@@ -9,7 +9,6 @@ import edu.bbte.idde.pgim2289.spring.model.Task;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import edu.bbte.idde.pgim2289.spring.services.ToDoService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -46,9 +45,6 @@ public class ToDoTaskController {
         ToDo toDo = toDoService.findById(todoId);
         toDo.addTask(task);
         toDoService.update(toDo);
-        Logger logger = org.slf4j.LoggerFactory.getLogger(ToDoTaskController.class);
-        logger.info("Task added: {}", task);
-
         return taskMapper.toTask(task);
     }
 

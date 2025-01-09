@@ -13,18 +13,18 @@ import java.util.List;
 public class ToDo extends BaseEntity {
     @Getter
     @Setter
-    @Column(name = "title", nullable = false)
+    @Column(name = "Title")
     private String title;
     @Setter
     @Getter
-    @Column(name = "description")
+    @Column(name = "Description")
     private String description;
-    @Column(name = "due_date")
+    @Column(name = "DueDate")
     @Temporal(TemporalType.DATE)
     private Date dueDate;
     @Setter
     @Getter
-    @Column(name = "priority")
+    @Column(name = "Priority")
     private Integer priority;
     @Getter
     @OneToMany(mappedBy = "toDo", cascade = CascadeType.ALL, orphanRemoval = true)

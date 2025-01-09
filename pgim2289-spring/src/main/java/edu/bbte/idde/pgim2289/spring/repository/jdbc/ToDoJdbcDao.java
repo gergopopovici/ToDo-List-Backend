@@ -56,7 +56,7 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
         todo.setId(resultSet.getLong("Id"));
         todo.setPriority(resultSet.getInt("Priority"));
         todo.setDescription(resultSet.getString("Description"));
-        todo.setDate(resultSet.getDate("DueDate"));
+        todo.setDate(resultSet.getDate("Duedate"));
         todo.setTitle(resultSet.getString("Title"));
         return todo;
     }
@@ -87,6 +87,6 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
 
     @Override
     protected List<String> getColumnNames() {
-        return List.of("Title", "Priority", "DueDate", "Description");
+        return List.of("Title", "Priority", "Duedate", "Description");
     }
 }

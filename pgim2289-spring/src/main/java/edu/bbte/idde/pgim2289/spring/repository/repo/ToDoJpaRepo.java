@@ -1,4 +1,4 @@
-package edu.bbte.idde.pgim2289.spring.repository;
+package edu.bbte.idde.pgim2289.spring.repository.repo;
 
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import org.springframework.context.annotation.Profile;
@@ -10,6 +10,6 @@ import java.util.Collection;
 
 @Repository
 @Profile("jpa")
-public interface ToDoDaoJpa extends JpaRepository<ToDo, Long> {
+public interface ToDoJpaRepo extends JpaRepository<ToDo, Long> {
     Collection<ToDo> findByPriority(Integer priority);
 }
