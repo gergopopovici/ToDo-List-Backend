@@ -18,7 +18,6 @@ public class Task extends BaseEntity {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id", nullable = false)
-    @JsonIgnore
     private ToDo toDo;
 
     public Task() {

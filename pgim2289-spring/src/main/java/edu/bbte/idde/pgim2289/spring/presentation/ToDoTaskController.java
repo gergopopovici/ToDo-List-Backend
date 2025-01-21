@@ -12,13 +12,17 @@ import edu.bbte.idde.pgim2289.spring.services.ToDoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-@Profile("!jpa")
 @RestController
 @RequestMapping("/api/todos/{todoId}/tasks")
 public class ToDoTaskController {
@@ -34,11 +38,21 @@ public class ToDoTaskController {
     }
 
     @GetMapping
-    public List<ResponseTaskDTO> getTasksByToDoId(@PathVariable Long todoId) throws EntityNotFoundException {
-        ToDo toDo = toDoService.findById(todoId);
-        return toDo.getTasks().stream()
-                .map(taskMapper::toTask)
-                .collect(Collectors.toList());
+    public Map<String, Object> getTasksByToDoId(@PathVariable Long todoId,
+                                                @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size,
+                                                @RequestParam(defaultValue = "id") String sort,
+                                                @RequestParam(defaultValue = "asc") String direction)
+            throws EntityNotFoundException {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
+        Page<Task> taskPage = taskJpaRepo.findByToDoId(todoId, pageable);
+        Map<String, Object> response = new ConcurrentHashMap<>();
+        response.put("data", taskPage.getContent().stream().map(taskMapper::toTask).collect(Collectors.toList()));
+        response.put("page", taskPage.getNumber());
+        response.put("size", taskPage.getSize());
+        response.put("totalElements", taskPage.getTotalElements());
+        response.put("totalPages", taskPage.getTotalPages());
+        return response;
     }
 
     @PostMapping
