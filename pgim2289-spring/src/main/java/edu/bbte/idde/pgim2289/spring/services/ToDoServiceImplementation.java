@@ -6,6 +6,8 @@ import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import edu.bbte.idde.pgim2289.spring.repository.ToDoDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -65,6 +67,11 @@ public class ToDoServiceImplementation implements ToDoService {
     }
 
     @Override
+    public Page<ToDo> findAll(Pageable pageable) {
+        return Page.empty();
+    }
+
+    @Override
     public void delete(Long id) throws EntityNotFoundException {
         toDoDao.delete(id);
     }
@@ -82,6 +89,11 @@ public class ToDoServiceImplementation implements ToDoService {
     @Override
     public Collection<ToDo> findByPriority(Integer priority) {
         return toDoDao.findByPriority(priority);
+    }
+
+    @Override
+    public Page<ToDo> findByPriority(Integer priority, Pageable pageable) {
+        return Page.empty();
     }
 
     @Override

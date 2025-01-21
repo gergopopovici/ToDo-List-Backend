@@ -10,36 +10,50 @@ import edu.bbte.idde.pgim2289.spring.services.ToDoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
-@Profile("!jpa")
+@Profile("jpa")
 @RestController
 @RequestMapping("/api/todos")
-public class ToDoController {
+public class ToDoJpaController {
     private final ToDoService toDoService;
     @Autowired
     private final ToDoMapper toDoMapper;
 
     @Autowired
-    public ToDoController(ToDoService toDoService, ToDoMapper toDoMapper) {
+    public ToDoJpaController(ToDoService toDoService, ToDoMapper toDoMapper) {
         this.toDoService = toDoService;
         this.toDoMapper = toDoMapper;
     }
 
     @GetMapping
-    public Collection<ResponseToDoDTO> getAllToDos(@RequestParam(required = false) Integer priority) {
+    public Map<String, Object> getAllToDos(@RequestParam(required = false) Integer priority,
+                                           @RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size,
+                                           @RequestParam(defaultValue = "id") String sort,
+                                           @RequestParam(defaultValue = "asc") String direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sort));
+        Page<ToDo> toDoPage;
         if (priority != null) {
-            return toDoService.findByPriority(priority).stream()
-                    .map(toDoMapper::toDTO)
-                    .toList();
+            toDoPage = toDoService.findByPriority(priority, pageable);
         } else {
-            return toDoService.findAll().stream()
-                    .map(toDoMapper::toDTO)
-                    .toList();
+            toDoPage = toDoService.findAll(pageable);
         }
+        Map<String, Object> response = new ConcurrentHashMap<>();
+        response.put("data", toDoPage.getContent().stream().map(toDoMapper::toDTO).collect(Collectors.toList()));
+        response.put("page", toDoPage.getNumber());
+        response.put("size", toDoPage.getSize());
+        response.put("totalPages", toDoPage.getTotalPages());
+        return response;
     }
 
     @GetMapping("/{id}")

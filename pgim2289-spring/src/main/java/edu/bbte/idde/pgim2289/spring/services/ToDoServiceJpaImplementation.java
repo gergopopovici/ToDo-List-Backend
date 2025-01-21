@@ -6,9 +6,12 @@ import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import edu.bbte.idde.pgim2289.spring.repository.repo.ToDoJpaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 @Service
@@ -26,6 +29,11 @@ public class ToDoServiceJpaImplementation implements ToDoService {
     public void create(ToDo toDo) throws InvalidInputException {
         validateToDoInput(toDo);
         toDoJpaRepo.save(toDo);
+    }
+
+    @Override
+    public Collection<ToDo> findAll() {
+        return toDoJpaRepo.findAll();
     }
 
     private void validateToDoInput(ToDo toDo) throws InvalidInputException {
@@ -60,8 +68,8 @@ public class ToDoServiceJpaImplementation implements ToDoService {
     }
 
     @Override
-    public Collection<ToDo> findAll() {
-        return toDoJpaRepo.findAll();
+    public Page<ToDo> findAll(Pageable pageable) {
+        return toDoJpaRepo.findAll(pageable);
     }
 
     @Override
@@ -81,7 +89,12 @@ public class ToDoServiceJpaImplementation implements ToDoService {
 
     @Override
     public Collection<ToDo> findByPriority(Integer priority) {
-        return toDoJpaRepo.findByPriority(priority);
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Page<ToDo> findByPriority(Integer priority, Pageable pageable) {
+        return toDoJpaRepo.findByPriority(priority, pageable);
     }
 
     @Override
