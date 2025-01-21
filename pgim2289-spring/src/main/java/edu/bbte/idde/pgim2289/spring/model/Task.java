@@ -1,6 +1,5 @@
 package edu.bbte.idde.pgim2289.spring.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
