@@ -5,6 +5,8 @@ import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import edu.bbte.idde.pgim2289.spring.repository.repo.ToDoJpaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,12 +27,15 @@ public class ToDoServiceJpaImplementation implements ToDoService {
     }
 
 
+    @CacheEvict(value = {"todos", "todo"}, allEntries = true)
     @Override
     public void create(ToDo toDo) throws InvalidInputException {
         validateToDoInput(toDo);
         toDoJpaRepo.save(toDo);
     }
 
+
+    @Cacheable("todos")
     @Override
     public Collection<ToDo> findAll() {
         return toDoJpaRepo.findAll();
@@ -67,16 +72,19 @@ public class ToDoServiceJpaImplementation implements ToDoService {
         }
     }
 
+    @Cacheable("todos")
     @Override
     public Page<ToDo> findAll(Pageable pageable) {
         return toDoJpaRepo.findAll(pageable);
     }
 
+    @CacheEvict(value = {"todos", "todo"}, allEntries = true)
     @Override
     public void delete(Long id) throws EntityNotFoundException {
         toDoJpaRepo.deleteById(id);
     }
 
+    @CacheEvict(value = {"todos", "todo"}, allEntries = true)
     @Override
     public void update(ToDo toDo) throws EntityNotFoundException, InvalidInputException {
         if (toDo.getTitle() == null || toDo.getTitle().isBlank()
@@ -87,16 +95,19 @@ public class ToDoServiceJpaImplementation implements ToDoService {
         toDoJpaRepo.save(toDo);
     }
 
+    @Cacheable("todo")
     @Override
     public Collection<ToDo> findByPriority(Integer priority) {
         return Collections.emptyList();
     }
 
+    @Cacheable("todo")
     @Override
     public Page<ToDo> findByPriority(Integer priority, Pageable pageable) {
         return toDoJpaRepo.findByPriority(priority, pageable);
     }
 
+    @Cacheable("todo")
     @Override
     public ToDo findById(Long id) {
         return toDoJpaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ToDo not found with id: " + id));
