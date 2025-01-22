@@ -5,12 +5,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
 @Profile("jpa")
-public interface ToDoJpaRepo extends JpaRepository<ToDo, Long> {
+public interface ToDoJpaRepo extends JpaRepository<ToDo, Long>, JpaSpecificationExecutor<ToDo> {
     Page<ToDo> findByPriority(Integer priority, Pageable pageable);
 
     @Override

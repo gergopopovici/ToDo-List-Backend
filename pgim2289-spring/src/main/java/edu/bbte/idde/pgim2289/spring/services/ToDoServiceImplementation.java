@@ -1,5 +1,6 @@
 package edu.bbte.idde.pgim2289.spring.services;
 
+import edu.bbte.idde.pgim2289.spring.dto.ToDoFilterDTO;
 import edu.bbte.idde.pgim2289.spring.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
@@ -99,6 +100,11 @@ public class ToDoServiceImplementation implements ToDoService {
     @Override
     public ToDo findById(Long id) {
         return toDoDao.findById(id);
+    }
+
+    @Override
+    public Page<ToDo> filterToDos(ToDoFilterDTO filterDTO, Pageable pageable) {
+        return Page.empty();
     }
 
 }

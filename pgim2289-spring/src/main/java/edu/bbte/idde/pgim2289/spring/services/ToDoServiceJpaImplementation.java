@@ -1,9 +1,11 @@
 package edu.bbte.idde.pgim2289.spring.services;
 
+import edu.bbte.idde.pgim2289.spring.dto.ToDoFilterDTO;
 import edu.bbte.idde.pgim2289.spring.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import edu.bbte.idde.pgim2289.spring.repository.repo.ToDoJpaRepo;
+import edu.bbte.idde.pgim2289.spring.specifications.ToDoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -111,5 +113,14 @@ public class ToDoServiceJpaImplementation implements ToDoService {
     @Override
     public ToDo findById(Long id) {
         return toDoJpaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ToDo not found with id: " + id));
+    }
+
+    @Override
+    @Cacheable("todos")
+    public Page<ToDo> filterToDos(ToDoFilterDTO filterDTO, Pageable pageable) {
+        return toDoJpaRepo.findAll(
+                ToDoSpecification.filterToDo(filterDTO),
+                pageable
+        );
     }
 }
