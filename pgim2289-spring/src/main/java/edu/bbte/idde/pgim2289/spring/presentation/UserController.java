@@ -11,6 +11,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -58,10 +61,18 @@ public class UserController {
         userService.update(updatedUser);
         return userMapper.toDTO(updatedUser);
     }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) throws EntityNotFoundException {
-        userService.delete(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+        if (Boolean.TRUE.equals(user.getAdmin())) {
+            userService.delete(id);
+        } else {
+            throw new AccessDeniedException("You are not authorized to delete users.");
+        }
     }
+
+
 }
