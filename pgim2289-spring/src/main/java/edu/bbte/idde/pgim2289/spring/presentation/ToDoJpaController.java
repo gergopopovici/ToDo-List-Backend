@@ -40,7 +40,9 @@ public class ToDoJpaController {
     @GetMapping
     public Map<String, Object> getAllToDos(@ModelAttribute ToDoFilterDTO filterDTO) {
 
-        Pageable pageable = PageRequest.of(filterDTO.getPage(), filterDTO.getSize(),
+        int page = filterDTO.getPage() != null ? filterDTO.getPage() : 0;
+        int size = filterDTO.getSize() != null ? filterDTO.getSize() : 10;
+        Pageable pageable = PageRequest.of(page, size,
                 Sort.by(Sort.Direction.fromString(filterDTO.getDirection()),
                         filterDTO.getSort()));
         Page<ToDo> toDoPage;
