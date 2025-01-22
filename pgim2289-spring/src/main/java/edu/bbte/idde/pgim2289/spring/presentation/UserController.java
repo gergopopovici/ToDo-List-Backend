@@ -61,6 +61,7 @@ public class UserController {
         userService.update(updatedUser);
         return userMapper.toDTO(updatedUser);
     }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) throws EntityNotFoundException {
