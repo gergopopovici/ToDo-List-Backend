@@ -3,11 +3,14 @@ package edu.bbte.idde.pgim2289.spring.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Entity
 @Table(name = "ToDo")
 public class ToDo extends BaseEntity {
@@ -28,6 +31,7 @@ public class ToDo extends BaseEntity {
     private Integer priority;
     @Getter
     @OneToMany(mappedBy = "toDo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private final List<Task> tasks = new ArrayList<>();
 
     public void addTask(Task task) {
