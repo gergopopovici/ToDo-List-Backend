@@ -1,6 +1,5 @@
 package edu.bbte.idde.pgim2289.spring.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -18,7 +17,6 @@ public class Task extends BaseEntity {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id", nullable = false)
-    @JsonIgnore
     private ToDo toDo;
 
     public Task() {
