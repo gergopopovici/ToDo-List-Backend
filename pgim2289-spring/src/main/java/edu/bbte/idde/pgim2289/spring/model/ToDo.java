@@ -1,12 +1,44 @@
 package edu.bbte.idde.pgim2289.spring.model;
 
-import java.util.Date;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@Entity
+@Table(name = "ToDo")
 public class ToDo extends BaseEntity {
+    @Getter
+    @Setter
+    @Column(name = "Title")
     private String title;
+    @Setter
+    @Getter
+    @Column(name = "Description")
     private String description;
+    @Column(name = "DueDate")
+    @Temporal(TemporalType.DATE)
     private Date dueDate;
+    @Setter
+    @Getter
+    @Column(name = "Priority")
     private Integer priority;
+    @Getter
+    @OneToMany(mappedBy = "toDo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Task> tasks = new ArrayList<>();
+
+    public void addTask(Task task) {
+        tasks.add(task);
+        task.setToDo(this);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+        task.setToDo(null);
+    }
 
     public ToDo() {
         super();
@@ -20,36 +52,12 @@ public class ToDo extends BaseEntity {
         this.priority = priority;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Date getDate() {
         return dueDate;
     }
 
     public void setDate(Date date) {
         this.dueDate = date;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
     }
 
     @Override
