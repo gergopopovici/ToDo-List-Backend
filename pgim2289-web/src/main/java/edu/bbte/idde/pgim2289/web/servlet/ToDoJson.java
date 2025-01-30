@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.bbte.idde.pgim2289.backend.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
+import edu.bbte.idde.pgim2289.backend.repository.ToDoServiceImplFactory;
 import edu.bbte.idde.pgim2289.backend.services.ToDoService;
 import edu.bbte.idde.pgim2289.backend.services.ToDoServiceImplementation;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,7 +20,7 @@ import java.util.Collection;
 
 @WebServlet("/todos")
 public class ToDoJson extends HttpServlet {
-    private final transient ToDoService toDoService = new ToDoServiceImplementation();
+    private final transient ToDoServiceImplementation toDoService = ToDoServiceImplFactory.getInstance();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override

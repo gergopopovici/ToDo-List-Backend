@@ -1,19 +1,34 @@
 package edu.bbte.idde.pgim2289.backend.services;
 
+import edu.bbte.idde.pgim2289.backend.config.ConfigLoader;
 import edu.bbte.idde.pgim2289.backend.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 
+@Slf4j
 public class ToDoServiceImplementation implements ToDoService {
     private final ToDoDao toDoDao;
+    @Getter
+    @Setter
+    private Long limit;
 
     public ToDoServiceImplementation() {
         toDoDao = DaoFactory.getInstance().getToDoDao();
+        try {
+            limit = 5L;
+            limit = ConfigLoader.loadConfig().getLimit();
+        }catch (IOException e){
+            log.error("Error loading config file", e);
+        }
     }
 
 
@@ -56,7 +71,7 @@ public class ToDoServiceImplementation implements ToDoService {
 
     @Override
     public Collection<ToDo> findAll() {
-        return toDoDao.findAll();
+        return toDoDao.findAll(limit);
     }
 
     @Override

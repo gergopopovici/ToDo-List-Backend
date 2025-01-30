@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,10 @@ public class ToDo extends BaseEntity {
     @Getter
     @OneToMany(mappedBy = "toDo", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Task> tasks = new ArrayList<>();
+    @Column(nullable = false)
+    @Setter
+    @Getter
+    private Instant createdAt;
 
     public void addTask(Task task) {
         tasks.add(task);

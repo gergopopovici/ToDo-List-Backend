@@ -42,10 +42,10 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
     protected abstract List<String> getColumnNames();
 
     @Override
-    public Collection<T> findAll() {
+    public Collection<T> findAll(Long limit) {
         logger.info("Finding all entities");
         Collection<T> entities = new ArrayList<>();
-        String sql = "SELECT * FROM " + getTableName();
+        String sql = "SELECT * FROM " + getTableName() + " LIMIT " + limit;
         try (Connection conn = dataSource.getConnection();
              Statement statement = conn.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {

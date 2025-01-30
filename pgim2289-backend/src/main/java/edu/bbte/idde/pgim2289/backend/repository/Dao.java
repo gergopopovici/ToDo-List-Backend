@@ -7,7 +7,7 @@ import edu.bbte.idde.pgim2289.backend.model.BaseEntity;
 import java.util.Collection;
 
 public interface Dao<T extends BaseEntity> {
-    Collection<T> findAll();
+    Collection<T> findAll(Long limit);
 
     void create(T entity) throws InvalidInputException;
 

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
 
@@ -17,7 +18,7 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
 
     @Override
     public Collection<T> findAll() {
-        return entities.values();
+        return entities.values().stream().limit(5).collect(Collectors.toList());
     }
 
     @Override

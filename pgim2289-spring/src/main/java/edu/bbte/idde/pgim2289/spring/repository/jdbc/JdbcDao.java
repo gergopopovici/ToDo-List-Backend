@@ -40,7 +40,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
     public Collection<T> findAll() {
         logger.info("Finding all entities");
         Collection<T> entities = new ArrayList<>();
-        String sql = "SELECT * FROM " + getTableName();
+        String sql = "SELECT * FROM " + getTableName() + "LIMIT 5";
         try (Connection conn = dataSource.getConnection();
              Statement statement = conn.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {

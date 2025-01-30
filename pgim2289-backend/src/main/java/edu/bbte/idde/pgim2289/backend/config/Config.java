@@ -7,6 +7,15 @@ public class Config {
     private String jdbcUser;
     private String jdbcPassword;
     private int jdbcPoolSize;
+    private Long limit;
+
+    public Long getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Long limit) {
+        this.limit = limit;
+    }
 
     public String getDaoType() {
         return daoType;

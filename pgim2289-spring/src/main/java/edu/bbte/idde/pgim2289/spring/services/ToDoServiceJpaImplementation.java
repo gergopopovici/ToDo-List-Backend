@@ -1,30 +1,45 @@
 package edu.bbte.idde.pgim2289.spring.services;
 
+import edu.bbte.idde.pgim2289.spring.config.CostumeConfigLoader;
 import edu.bbte.idde.pgim2289.spring.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import edu.bbte.idde.pgim2289.spring.repository.repo.ToDoJpaRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 
+@Slf4j
 @Service
 @Profile("jpa")
 public class ToDoServiceJpaImplementation implements ToDoService {
     private final ToDoJpaRepo toDoJpaRepo;
 
+    private final CostumeConfigLoader costumeConfigLoader;
+
+    private  Integer timeWindow;
+
     @Autowired
-    public ToDoServiceJpaImplementation(ToDoJpaRepo toDoJpaRepo) {
+    public ToDoServiceJpaImplementation(ToDoJpaRepo toDoJpaRepo, CostumeConfigLoader costumeConfigLoader) {
         this.toDoJpaRepo = toDoJpaRepo;
+        this.costumeConfigLoader = costumeConfigLoader;
+        this.timeWindow = costumeConfigLoader.getTimeWindow();
+        if(timeWindow == null) {
+            this.timeWindow = 0;
+        }
+        log.info("Time window: {}", timeWindow);
     }
 
 
     @Override
     public void create(ToDo toDo) throws InvalidInputException {
         validateToDoInput(toDo);
+        toDo.setCreatedAt(Instant.now());
         toDoJpaRepo.save(toDo);
     }
 
@@ -61,6 +76,9 @@ public class ToDoServiceJpaImplementation implements ToDoService {
 
     @Override
     public Collection<ToDo> findAll() {
+        if(timeWindow != 0) {
+            return toDoJpaRepo.findByCreatedAtAfter(Instant.now().minusSeconds(timeWindow));
+        }
         return toDoJpaRepo.findAll();
     }
 
