@@ -3,8 +3,8 @@ package edu.bbte.idde.pgim2289.spring.services;
 import edu.bbte.idde.pgim2289.spring.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
-import edu.bbte.idde.pgim2289.spring.repository.ToDoDaoJpa;
 import edu.bbte.idde.pgim2289.spring.repository.UserJpa;
+import edu.bbte.idde.pgim2289.spring.repository.repo.ToDoJpaRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +17,12 @@ import java.util.Date;
 @Service
 @Profile("jpa")
 public class ToDoServiceJpaImplementation implements ToDoService {
-    private final ToDoDaoJpa toDoDaoJpa;
+    private final ToDoJpaRepo toDoDaoJpa;
     private final UserJpa userJpa;
     private final Logger logger = LoggerFactory.getLogger(ToDoServiceJpaImplementation.class);
 
     @Autowired
-    public ToDoServiceJpaImplementation(ToDoDaoJpa toDoDaoJpa, UserJpa userJpa) {
+    public ToDoServiceJpaImplementation(ToDoJpaRepo toDoDaoJpa, UserJpa userJpa) {
         this.toDoDaoJpa = toDoDaoJpa;
         this.userJpa = userJpa;
     }
