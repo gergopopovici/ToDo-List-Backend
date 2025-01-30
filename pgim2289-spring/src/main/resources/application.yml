@@ -1,3 +1,5 @@
 spring:
   profiles:
     active: jpa
+server:
+    port: 8081
