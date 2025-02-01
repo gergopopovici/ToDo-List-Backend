@@ -7,6 +7,24 @@ public class Config {
     private String jdbcUser;
     private String jdbcPassword;
     private int jdbcPoolSize;
+    private Boolean logQueries;
+    private Boolean logUpdates;
+
+    public Boolean getLogQueries() {
+        return logQueries;
+    }
+
+    public void setLogQueries(Boolean logQueries) {
+        this.logQueries = logQueries;
+    }
+
+    public Boolean getLogUpdates() {
+        return logUpdates;
+    }
+
+    public void setLogUpdates(Boolean logUpdates) {
+        this.logUpdates = logUpdates;
+    }
 
     public String getDaoType() {
         return daoType;

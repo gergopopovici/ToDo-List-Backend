@@ -1,5 +1,7 @@
 package edu.bbte.idde.pgim2289.backend.repository.jdbc;
 
+import edu.bbte.idde.pgim2289.backend.config.Config;
+import edu.bbte.idde.pgim2289.backend.config.ConfigLoader;
 import edu.bbte.idde.pgim2289.backend.exceptions.DatabaseException;
 import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
@@ -20,12 +22,27 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
 
     private static final Logger logger = LoggerFactory.getLogger(ToDoJdbcDao.class);
     private static final String tableName = "ToDo";
+    private static final Config config;
+
+
+    static {
+        try {
+            config = ConfigLoader.loadConfig();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private final Boolean logQueries = config.getLogQueries();
 
     @Override
     public Collection<ToDo> findByPriority(Integer priority) {
         logger.info("Finding all entities with priority " + priority);
         Collection<ToDo> todos = new ArrayList<>();
         String sql = "SELECT * FROM " + tableName + " WHERE Priority = ?";
+        if (logQueries) {
+            logger.info("Executing SQL query: " + sql);
+        }
         try (Connection conn = DataSourceFactory.getDataSource().getConnection()) {
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, priority);

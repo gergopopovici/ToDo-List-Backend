@@ -41,6 +41,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
         logger.info("Finding all entities");
         Collection<T> entities = new ArrayList<>();
         String sql = "SELECT * FROM " + getTableName();
+        logger.info("Executing SQL query: " + sql);
         try (Connection conn = dataSource.getConnection();
              Statement statement = conn.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
@@ -59,6 +60,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
     public void delete(Long id) throws EntityNotFoundException {
         logger.info("Deleting entity with ID " + id);
         String sql = "DELETE FROM " + getTableName() + " WHERE Id = ?";
+        logger.info("Executing SQL query: " + sql);
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setLong(1, id);
@@ -79,6 +81,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
         String columns = String.join(", ", getColumnNames());
         String placeholders = String.join(", ", Collections.nCopies(getColumnNames().size(), "?"));
         String sql = "INSERT INTO " + getTableName() + " (" + columns + ") VALUES (" + placeholders + ")";
+        logger.info("Executing SQL query: " + sql);
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             prepareInsert(statement, entity);
@@ -108,6 +111,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
         List<String> columns = getColumnNames();
         String setClause = String.join(" = ?, ", columns) + " = ?";
         String sql = "UPDATE " + getTableName() + " SET " + setClause + " WHERE Id = ?";
+        logger.info("Executing SQL query: " + sql);
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
             prepareUpdate(statement, entity);
@@ -126,6 +130,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
     public T findById(Long id) throws EntityNotFoundException {
         logger.info("Finding entity with ID " + id);
         String sql = "SELECT * FROM " + getTableName() + " WHERE Id = ?";
+        logger.info("Executing SQL query: " + sql);
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setLong(1, id);

@@ -61,12 +61,14 @@ public class ToDoServiceJpaImplementation implements ToDoService {
 
     @Override
     public Collection<ToDo> findAll() {
-        return toDoJpaRepo.findAll();
+        return toDoJpaRepo.findAll().stream().filter(toDo -> !toDo.getDeleted()).toList();
     }
 
     @Override
     public void delete(Long id) throws EntityNotFoundException {
-        toDoJpaRepo.deleteById(id);
+        ToDo toDo = findById(id);
+        toDo.setDeleted(true);
+        update(toDo);
     }
 
     @Override
@@ -86,6 +88,10 @@ public class ToDoServiceJpaImplementation implements ToDoService {
 
     @Override
     public ToDo findById(Long id) {
-        return toDoJpaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ToDo not found with id: " + id));
+        ToDo toDo = toDoJpaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ToDo not found with id: " + id));
+        if (toDo.getDeleted()) {
+            throw new EntityNotFoundException("ToDo not found with id: " + id);
+        }
+        return toDo;
     }
 }

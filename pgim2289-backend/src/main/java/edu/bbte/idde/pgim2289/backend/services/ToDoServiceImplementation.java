@@ -5,12 +5,14 @@ import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
+import edu.bbte.idde.pgim2289.backend.repository.jdbc.ToDoJdbcDao;
 
 import java.util.Collection;
 import java.util.Date;
 
 public class ToDoServiceImplementation implements ToDoService {
     private final ToDoDao toDoDao;
+
 
     public ToDoServiceImplementation() {
         toDoDao = DaoFactory.getInstance().getToDoDao();
@@ -82,6 +84,22 @@ public class ToDoServiceImplementation implements ToDoService {
     @Override
     public ToDo findById(Long id) {
         return toDoDao.findById(id);
+    }
+
+    @Override
+    public Integer getLogUpdateCount() {
+        if(toDoDao.getLogUpdatesNumbers() == null) {
+            return null;
+        }
+        return toDoDao.getLogUpdatesNumbers();
+    }
+
+    @Override
+    public Integer getLogQueryCount() {
+        if(toDoDao.getLogQueriesNumbers() == null) {
+            return null;
+        }
+        return toDoDao.getLogQueriesNumbers();
     }
 
 }

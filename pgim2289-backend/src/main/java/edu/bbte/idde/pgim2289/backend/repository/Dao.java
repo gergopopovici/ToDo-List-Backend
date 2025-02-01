@@ -16,4 +16,7 @@ public interface Dao<T extends BaseEntity> {
     void update(T entity) throws EntityNotFoundException;
 
     T findById(Long id) throws EntityNotFoundException;
+
+    Integer getLogQueriesNumbers();
+    Integer getLogUpdatesNumbers();
 }

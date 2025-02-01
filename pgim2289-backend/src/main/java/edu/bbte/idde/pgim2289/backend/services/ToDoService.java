@@ -18,4 +18,7 @@ public interface ToDoService {
     Collection<ToDo> findByPriority(Integer priority);
 
     ToDo findById(Long id);
+
+    public Integer getLogUpdateCount();
+    public Integer getLogQueryCount();
 }

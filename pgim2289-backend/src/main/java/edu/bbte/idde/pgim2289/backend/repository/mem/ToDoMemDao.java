@@ -14,4 +14,14 @@ public class ToDoMemDao extends MemDao<ToDo> implements ToDoDao {
                 .filter(toDo -> toDo.getPriority().equals(priority))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Integer getLogQueriesNumbers() {
+        return 0;
+    }
+
+    @Override
+    public Integer getLogUpdatesNumbers() {
+        return 0;
+    }
 }
