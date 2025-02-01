@@ -1,5 +1,9 @@
 package edu.bbte.idde.pgim2289.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
 public class ToDo extends BaseEntity {
@@ -7,6 +11,10 @@ public class ToDo extends BaseEntity {
     private String description;
     private Date dueDate;
     private Integer priority;
+    @Getter
+    @Setter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private long serialVersionUID;
 
     public ToDo() {
         super();
