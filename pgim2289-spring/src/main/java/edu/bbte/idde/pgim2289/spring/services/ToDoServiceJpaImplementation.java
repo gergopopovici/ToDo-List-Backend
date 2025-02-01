@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Profile("jpa")
@@ -117,5 +118,10 @@ public class ToDoServiceJpaImplementation implements ToDoService {
             throw new EntityNotFoundException("User not found with id: " + userId);
         }
         return toDoDaoJpa.findByUserId(userId);
+    }
+
+    @Override
+    public Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo, Date dueDate) {
+        return toDoDaoJpa.findByFilters(priority, dueDateFrom, dueDateTo, dueDate);
     }
 }

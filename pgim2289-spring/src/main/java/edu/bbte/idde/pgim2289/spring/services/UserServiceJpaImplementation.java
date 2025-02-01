@@ -80,7 +80,7 @@ public class UserServiceJpaImplementation implements UserService {
     }
 
     @Override
-    public void delete(Long id) throws InvalidInputException {
+    public void delete(Long adminId, Long id) throws InvalidInputException {
         userJpa.deleteById(id);
     }
 

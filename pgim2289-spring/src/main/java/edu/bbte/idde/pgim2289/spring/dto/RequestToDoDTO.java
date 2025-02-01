@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class RequestToDoDTO {
@@ -20,4 +21,6 @@ public class RequestToDoDTO {
     private Integer priority;
     @NotNull
     private Long userId;
+    @NotNull
+    private List<RequestTaskDTO> tasks;
 }

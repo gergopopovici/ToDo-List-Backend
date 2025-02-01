@@ -8,6 +8,7 @@ import edu.bbte.idde.pgim2289.spring.mapper.UserMapper;
 import edu.bbte.idde.pgim2289.spring.model.User;
 import edu.bbte.idde.pgim2289.spring.services.UserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.Collection;
 @Profile("jpa")
 @RestController
 @RequestMapping("/api/users")
+@Slf4j
 public class UserController {
     private final UserService userService;
     @Autowired
@@ -62,14 +64,15 @@ public class UserController {
         return userMapper.toDTO(updatedUser);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{adminId}/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable Long id) throws EntityNotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        User user = userService.findByUsername(username);
+    public void deleteUser(@PathVariable Long adminId, @PathVariable Long id) throws EntityNotFoundException {
+        User user = userService.findById(adminId);
+        log.info("User {} is trying to delete user with id {}", user.getUsername(), id);
+        log.info("Admin id: {}", user.getAdmin());
         if (Boolean.TRUE.equals(user.getAdmin())) {
-            userService.delete(id);
+            log.info("User {} is authorized to delete user with id {}", user.getUsername(), id);
+            userService.delete(adminId, id);
         } else {
             throw new AccessDeniedException("You are not authorized to delete users.");
         }
