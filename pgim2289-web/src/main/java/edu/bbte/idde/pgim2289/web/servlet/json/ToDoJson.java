@@ -1,4 +1,4 @@
-package edu.bbte.idde.pgim2289.web.servlet;
+package edu.bbte.idde.pgim2289.web.servlet.json;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -8,6 +8,7 @@ import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.services.ToDoService;
 import edu.bbte.idde.pgim2289.backend.services.ToDoServiceImplementation;
+import edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,11 +38,11 @@ public class ToDoJson extends HttpServlet {
                 }
             } catch (NumberFormatException e) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+                edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
                 objectMapper.writeValue(response.getWriter(), error);
             } catch (EntityNotFoundException e) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                Error error = new Error(HttpServletResponse.SC_NOT_FOUND, "Entity with ID "
+                edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_NOT_FOUND, "Entity with ID "
                         + request.getParameter("id") + " not found");
                 objectMapper.writeValue(response.getWriter(), error);
             }
@@ -56,16 +57,15 @@ public class ToDoJson extends HttpServlet {
         response.setContentType("application/json");
         try (BufferedReader reader = request.getReader()) {
             ToDo todo = objectMapper.readValue(reader, ToDo.class);
-            toDoService.create(todo);
             response.setStatus(HttpServletResponse.SC_CREATED);
             objectMapper.writeValue(response.getWriter(), todo);
         } catch (InvalidInputException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
+            edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
             objectMapper.writeValue(response.getWriter(), error);
         } catch (JsonMappingException | JsonParseException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
+            edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
             objectMapper.writeValue(response.getWriter(), error);
         }
     }
@@ -76,7 +76,7 @@ public class ToDoJson extends HttpServlet {
         String idParam = request.getParameter("id");
         if (idParam == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "ID parameter is required");
+            edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_BAD_REQUEST, "ID parameter is required");
             objectMapper.writeValue(response.getWriter(), error);
             return;
         }
@@ -89,11 +89,11 @@ public class ToDoJson extends HttpServlet {
             }
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+            edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
             objectMapper.writeValue(response.getWriter(), error);
         } catch (EntityNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            Error error = new Error(HttpServletResponse.SC_NOT_FOUND, "Entity with ID "
+            edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_NOT_FOUND, "Entity with ID "
                     + request.getParameter("id") + " not found");
             objectMapper.writeValue(response.getWriter(), error);
         }
@@ -105,7 +105,7 @@ public class ToDoJson extends HttpServlet {
         String idParam = request.getParameter("id");
         if (idParam == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "ID parameter is required");
+            edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_BAD_REQUEST, "ID parameter is required");
             objectMapper.writeValue(response.getWriter(), error);
             return;
         }
@@ -121,26 +121,26 @@ public class ToDoJson extends HttpServlet {
                     objectMapper.writeValue(response.getWriter(), updatedToDo);
                 } catch (JsonMappingException | JsonParseException e) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
+                    edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
                     objectMapper.writeValue(response.getWriter(), error);
                 } catch (IOException e) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
+                    edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
                     objectMapper.writeValue(response.getWriter(), error);
                 }
             }
         } catch (EntityNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            Error error = new Error(HttpServletResponse.SC_NOT_FOUND, "Entity with ID "
+            edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_NOT_FOUND, "Entity with ID "
                     + request.getParameter("id") + " not found");
             objectMapper.writeValue(response.getWriter(), error);
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
+            edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format");
             objectMapper.writeValue(response.getWriter(), error);
         } catch (InvalidInputException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
+            edu.bbte.idde.pgim2289.web.servlet.customErrorMessages.Error error = new Error(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
             objectMapper.writeValue(response.getWriter(), error);
         }
     }
