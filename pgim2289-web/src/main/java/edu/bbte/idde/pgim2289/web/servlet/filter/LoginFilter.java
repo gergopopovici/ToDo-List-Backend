@@ -1,4 +1,4 @@
-package edu.bbte.idde.pgim2289.web.servlet.Filter;
+package edu.bbte.idde.pgim2289.web.servlet.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;

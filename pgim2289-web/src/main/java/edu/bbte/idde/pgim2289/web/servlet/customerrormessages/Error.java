@@ -1,4 +1,4 @@
-package edu.bbte.idde.pgim2289.web.servlet.customErrorMessages;
+package edu.bbte.idde.pgim2289.web.servlet.customerrormessages;
 
 public class Error {
     private int status;
