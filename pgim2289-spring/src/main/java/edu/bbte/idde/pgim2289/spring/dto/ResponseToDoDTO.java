@@ -13,5 +13,5 @@ public class ResponseToDoDTO {
     private Date date;
     private Integer priority;
     private Long userId;
-    private List<ResponseTaskDTO>tasks;
+    private List<ResponseTaskDTO> tasks;
 }

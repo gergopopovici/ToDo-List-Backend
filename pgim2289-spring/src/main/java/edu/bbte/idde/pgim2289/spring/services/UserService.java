@@ -8,7 +8,7 @@ import java.util.Collection;
 public interface UserService {
     void create(User user) throws InvalidInputException;
 
-    void delete(Long adminId,Long id) throws InvalidInputException;
+    void delete(Long adminId, Long id) throws InvalidInputException;
 
     void update(User user) throws InvalidInputException;
 

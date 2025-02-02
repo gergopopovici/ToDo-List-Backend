@@ -14,7 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -64,7 +63,8 @@ public class ToDoController {
 
     @PutMapping("/{id}")
     public ResponseToDoDTO updateTodo(@PathVariable Long id,
-                                      @Valid @RequestBody RequestToDoDTO requestToDoDTO) throws EntityNotFoundException, InvalidInputException {
+                                      @Valid @RequestBody RequestToDoDTO requestToDoDTO)
+            throws EntityNotFoundException, InvalidInputException {
         ToDo updatedToDo = toDoMapper.toEntity(requestToDoDTO);
         ToDo existingToDo = toDoService.findById(id);
         updatedToDo.setId(id);
@@ -90,20 +90,21 @@ public class ToDoController {
                 .map(toDoMapper::toDTO)
                 .toList();
     }
+
     @GetMapping("/user/{userId}/filters")
     public Collection<ResponseToDoDTO> getToDosByUserIdWithFilters(
             @PathVariable Long userId,
             @RequestParam(required = false) Integer priority,
-            @RequestParam(required = false)@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dueDateFrom,
-            @RequestParam(required = false)@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dueDateTo,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Date dueDate) throws EntityNotFoundException {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dueDateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date dueDateTo)
+            throws EntityNotFoundException {
 
 
         if (toDoService.findByUserId(userId).isEmpty()) {
             return Collections.emptyList();
         }
 
-        Collection<ToDo> toDos = toDoService.findByFilters(priority, dueDateFrom, dueDateTo, dueDate);
+        Collection<ToDo> toDos = toDoService.findByFilters(priority, dueDateFrom, dueDateTo);
         return toDos.stream()
                 .filter(toDo -> toDo.getUserId().equals(userId))
                 .map(toDoMapper::toDTO)

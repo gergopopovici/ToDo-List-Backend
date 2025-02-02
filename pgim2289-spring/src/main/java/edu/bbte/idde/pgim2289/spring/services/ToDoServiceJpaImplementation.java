@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 @Service
 @Profile("jpa")
@@ -121,7 +120,7 @@ public class ToDoServiceJpaImplementation implements ToDoService {
     }
 
     @Override
-    public Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo, Date dueDate) {
-        return toDoDaoJpa.findByFilters(priority, dueDateFrom, dueDateTo, dueDate);
+    public Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo) {
+        return toDoDaoJpa.findByFilters(priority, dueDateFrom, dueDateTo);
     }
 }

@@ -102,7 +102,7 @@ public class ToDoServiceImplementation implements ToDoService {
     }
 
     @Override
-    public Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo, Date dueDate) {
+    public Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo) {
         return List.of();
     }
 }

@@ -22,5 +22,5 @@ public interface ToDoService {
 
     Collection<ToDo> findByUserId(Long userId);
 
-    Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo, Date dueDate);
+    Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo);
 }
