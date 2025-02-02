@@ -57,8 +57,8 @@ public class ToDoJson extends HttpServlet {
         response.setContentType("application/json");
         try (BufferedReader reader = request.getReader()) {
             ToDo todo = objectMapper.readValue(reader, ToDo.class);
-            response.setStatus(HttpServletResponse.SC_CREATED);
             toDoService.create(todo);
+            response.setStatus(HttpServletResponse.SC_CREATED);
             objectMapper.writeValue(response.getWriter(), todo);
         } catch (InvalidInputException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

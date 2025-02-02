@@ -14,7 +14,7 @@ public class ToDo extends BaseEntity {
     @Getter
     @Setter
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private long versioncount;
+    private long versioncount=1L;
 
     public ToDo() {
         super();
@@ -69,6 +69,7 @@ public class ToDo extends BaseEntity {
                 + ", date=" + dueDate
                 + ", priority=" + priority
                 + ", id=" + id
+                + ", versioncount=" + versioncount
                 + '}';
     }
 }

@@ -22,7 +22,8 @@ public class ToDoServiceImplementation implements ToDoService {
     public void create(ToDo toDo) throws InvalidInputException {
         log.info("Todo{}", toDo);
         validateToDoInput(toDo);
-        toDo.setVersioncount(0);
+        toDo.setVersioncount(1);
+        log.info("ToDO{}",toDo);
         toDoDao.create(toDo);
     }
 
@@ -74,6 +75,10 @@ public class ToDoServiceImplementation implements ToDoService {
                 || toDo.getDate() == null) {
             throw new InvalidInputException("Invalid input: title, description, and due date cannot be empty.");
         }
+        long version = toDo.getVersioncount() + 1L;
+        log.info("version{}",version);
+        toDo.setVersioncount(version);
+        log.info("todo{}",toDo);
         toDoDao.update(toDo);
     }
 

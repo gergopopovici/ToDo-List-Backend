@@ -105,6 +105,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
             prepareUpdate(statement, entity);
+            logger.info(sql);
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected == 0) {
                 throw new EntityNotFoundException("Entity with ID " + entity.getId() + " not found");

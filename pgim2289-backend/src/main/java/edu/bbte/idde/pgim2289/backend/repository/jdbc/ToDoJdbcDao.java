@@ -4,6 +4,7 @@ import edu.bbte.idde.pgim2289.backend.exceptions.DatabaseException;
 import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Slf4j
 public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
 
     private static final Logger logger = LoggerFactory.getLogger(ToDoJdbcDao.class);
@@ -49,12 +51,14 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
         todo.setDescription(resultSet.getString("Description"));
         todo.setDate(resultSet.getDate("DueDate"));
         todo.setTitle(resultSet.getString("Title"));
+        todo.setVersioncount(resultSet.getLong("versioncount"));
         return todo;
     }
 
     @Override
     protected void prepareInsert(PreparedStatement statement, ToDo entity) throws SQLException, InvalidInputException {
         // validateToDoInput(entity);
+        log.info("entity{}",entity);
         statement.setString(1, entity.getTitle());
         statement.setInt(2, entity.getPriority());
         statement.setDate(3, new java.sql.Date(entity.getDate().getTime()));
@@ -65,11 +69,13 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
     @Override
     protected void prepareUpdate(PreparedStatement statement, ToDo entity) throws SQLException {
         // validateToDoInput(entity);
+        log.info("entity{}",entity);
         statement.setString(1, entity.getTitle());
         statement.setInt(2, entity.getPriority());
         statement.setDate(3, new java.sql.Date(entity.getDate().getTime()));
         statement.setString(4, entity.getDescription());
-        statement.setLong(5, entity.getId());
+        statement.setLong(5, entity.getVersioncount());
+        statement.setLong(6, entity.getId());
     }
 
     @Override
