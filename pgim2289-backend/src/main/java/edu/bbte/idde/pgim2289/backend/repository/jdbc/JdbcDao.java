@@ -87,6 +87,7 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
             prepareInsert(statement, entity);
+            logger.info(sql);
             statement.executeUpdate();
         } catch (SQLException ex) {
             logger.error("Error while creating entity", ex);

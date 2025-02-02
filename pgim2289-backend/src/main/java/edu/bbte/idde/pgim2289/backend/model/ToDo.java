@@ -14,18 +14,19 @@ public class ToDo extends BaseEntity {
     @Getter
     @Setter
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private long serialVersionUID;
+    private long versioncount;
 
     public ToDo() {
         super();
     }
 
-    public ToDo(Long id, String title, String description, Date dueDate, Integer priority) {
+    public ToDo(Long id, String title, String description, Date dueDate, Integer priority,Long versioncount) {
         super(id);
         this.dueDate = dueDate;
         this.title = title;
         this.description = description;
         this.priority = priority;
+        this.versioncount = versioncount;
     }
 
     public String getTitle() {

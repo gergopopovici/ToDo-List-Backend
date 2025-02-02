@@ -5,10 +5,11 @@ import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Date;
-
+@Slf4j
 public class ToDoServiceImplementation implements ToDoService {
     private final ToDoDao toDoDao;
 
@@ -19,7 +20,9 @@ public class ToDoServiceImplementation implements ToDoService {
 
     @Override
     public void create(ToDo toDo) throws InvalidInputException {
+        log.info("Todo{}", toDo);
         validateToDoInput(toDo);
+        toDo.setVersioncount(0);
         toDoDao.create(toDo);
     }
 

@@ -59,7 +59,7 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
         statement.setInt(2, entity.getPriority());
         statement.setDate(3, new java.sql.Date(entity.getDate().getTime()));
         statement.setString(4, entity.getDescription());
-        statement.setString(5, "0");
+        statement.setLong(5, entity.getVersioncount());
     }
 
     @Override
@@ -79,6 +79,6 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
 
     @Override
     protected List<String> getColumnNames() {
-        return List.of("Title", "Priority", "DueDate", "Description","serialVersionUID");
+        return List.of("Title", "Priority", "DueDate", "Description","versioncount");
     }
 }
