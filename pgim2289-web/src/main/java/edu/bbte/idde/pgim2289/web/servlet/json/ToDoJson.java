@@ -3,6 +3,8 @@ package edu.bbte.idde.pgim2289.web.servlet.json;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.bbte.idde.pgim2289.backend.config.Config;
+import edu.bbte.idde.pgim2289.backend.config.ConfigLoader;
 import edu.bbte.idde.pgim2289.backend.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
@@ -13,15 +15,26 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Collection;
 
+@Slf4j
 @WebServlet("/todos")
 public class ToDoJson extends HttpServlet {
     private final transient ToDoService toDoService = new ToDoServiceImplementation();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Config config;
+
+    static {
+        try {
+            config = ConfigLoader.loadConfig();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -33,7 +46,11 @@ public class ToDoJson extends HttpServlet {
             try {
                 Long id = Long.parseLong(idParam);
                 ToDo todo = toDoService.findById(id);
+                log.info("tod{}", todo);
                 if (todo != null) {
+                    if(!config.getVersionList()) {
+                        todo.setVersion(null);
+                    }
                     objectMapper.writeValue(response.getWriter(), todo);
                 }
             } catch (NumberFormatException e) {
@@ -48,6 +65,11 @@ public class ToDoJson extends HttpServlet {
             }
         } else {
             Collection<ToDo> todos = toDoService.findAll();
+            if(!config.getVersionList()) {
+                todos.forEach(toDo -> {
+                    toDo.setVersion(null);
+                });
+            }
             objectMapper.writeValue(response.getWriter(), todos);
         }
     }
@@ -119,6 +141,9 @@ public class ToDoJson extends HttpServlet {
                     ToDo updatedToDo = objectMapper.readValue(reader, ToDo.class);
                     updatedToDo.setId(id);
                     toDoService.update(updatedToDo);
+                    if(!config.getVersionList()) {
+                        updatedToDo.setVersion(null);
+                    }
                     objectMapper.writeValue(response.getWriter(), updatedToDo);
                 } catch (JsonMappingException | JsonParseException e) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

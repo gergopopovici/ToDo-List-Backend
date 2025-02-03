@@ -1,4 +1,5 @@
 {
+  "versionList": true,
   "daoType": "jdbc",
   "jdbcDriver": "com.mysql.cj.jdbc.Driver",
   "jdbcUrl": "jdbc:mysql://localhost:3306/toDo",

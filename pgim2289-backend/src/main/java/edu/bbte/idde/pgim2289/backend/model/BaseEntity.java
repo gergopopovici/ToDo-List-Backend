@@ -1,5 +1,7 @@
 package edu.bbte.idde.pgim2289.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -7,6 +9,17 @@ public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     protected Long id;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+
+    protected Long version;
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 
     public BaseEntity() {
     }

@@ -1,6 +1,8 @@
 package edu.bbte.idde.pgim2289.backend.repository.jdbc;
 
 import com.zaxxer.hikari.HikariDataSource;
+import edu.bbte.idde.pgim2289.backend.config.Config;
+import edu.bbte.idde.pgim2289.backend.config.ConfigLoader;
 import edu.bbte.idde.pgim2289.backend.exceptions.DatabaseException;
 import edu.bbte.idde.pgim2289.backend.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.backend.model.BaseEntity;

@@ -1,16 +1,28 @@
 package edu.bbte.idde.pgim2289.backend.services;
 
+import edu.bbte.idde.pgim2289.backend.config.Config;
+import edu.bbte.idde.pgim2289.backend.config.ConfigLoader;
 import edu.bbte.idde.pgim2289.backend.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 
 public class ToDoServiceImplementation implements ToDoService {
     private final ToDoDao toDoDao;
+    private static final Config config;
+
+    static {
+        try {
+            config = ConfigLoader.loadConfig();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public ToDoServiceImplementation() {
         toDoDao = DaoFactory.getInstance().getToDoDao();
@@ -20,6 +32,7 @@ public class ToDoServiceImplementation implements ToDoService {
     @Override
     public void create(ToDo toDo) throws InvalidInputException {
         validateToDoInput(toDo);
+        toDo.setVersion(1L);
         toDoDao.create(toDo);
     }
 
@@ -71,6 +84,8 @@ public class ToDoServiceImplementation implements ToDoService {
                 || toDo.getDate() == null) {
             throw new InvalidInputException("Invalid input: title, description, and due date cannot be empty.");
         }
+        ToDo oldToDo = findById(toDo.getId());
+        toDo.setVersion(oldToDo.getVersion() + 1L);
         toDoDao.update(toDo);
     }
 
