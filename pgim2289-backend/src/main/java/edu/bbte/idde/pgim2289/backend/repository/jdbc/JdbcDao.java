@@ -79,21 +79,25 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
     }
 
     @Override
-    public void create(T entity) {
+    public void create2(Collection<T> entities) {
         logger.info("Creating entity");
         String columns = String.join(", ", getColumnNames());
         String placeholders = String.join(", ", Collections.nCopies(getColumnNames().size(), "?"));
         String sql = "INSERT INTO " + getTableName() + " (" + columns + ") VALUES (" + placeholders + ")";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
-            prepareInsert(statement, entity);
-            statement.executeUpdate();
+            for (T entity : entities) {
+                prepareInsert(statement, entity);
+                statement.addBatch();
+            }
+            int[] rowsAffected = statement.executeBatch();
         } catch (SQLException ex) {
             logger.error("Error while creating entity", ex);
             throw new DatabaseException("Error while creating entity", ex);
         }
         logger.info("Entity created successfully");
     }
+
 
     @Override
     public void update(T entity) throws EntityNotFoundException {
@@ -135,4 +139,21 @@ public abstract class JdbcDao<T extends BaseEntity> implements Dao<T> {
             throw new DatabaseException("Error while finding by ID", ex);
         }
     }
+    @Override
+    public void create(T entity) {
+        logger.info("Creating entity");
+        String columns = String.join(", ", getColumnNames());
+        String placeholders = String.join(", ", Collections.nCopies(getColumnNames().size(), "?"));
+        String sql = "INSERT INTO " + getTableName() + " (" + columns + ") VALUES (" + placeholders + ")";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            prepareInsert(statement, entity);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            logger.error("Error while creating entity", ex);
+            throw new DatabaseException("Error while creating entity", ex);
+        }
+        logger.info("Entity created successfully");
+    }
+
 }

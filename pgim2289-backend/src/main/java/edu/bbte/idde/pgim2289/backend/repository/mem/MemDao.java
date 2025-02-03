@@ -21,14 +21,26 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
     }
 
     @Override
+    public void create2(Collection<T> entities2) throws InvalidInputException {
+        entities2.forEach(entity -> {
+            if (entity.getId() == null) {
+                entity.setId(nextId.getAndIncrement());
+            }
+            if (entities.containsKey(nextId.get() - 1)) {
+                throw new InvalidInputException("This + " + nextId + "is already taken");
+            }
+            entities.put(entity.getId(), entity);
+        });
+    }
+
+    @Override
     public void create(T entity) throws InvalidInputException {
         if (entity.getId() == null) {
             entity.setId(nextId.getAndIncrement());
         }
-        if (entities.containsKey(nextId.get() - 1)) {
-            throw new InvalidInputException("This + " + nextId + "is already taken");
+        if (entities.containsKey(entity.getId())) {
+            entities.put(entity.getId(), entity);
         }
-        entities.put(entity.getId(), entity);
     }
 
     @Override

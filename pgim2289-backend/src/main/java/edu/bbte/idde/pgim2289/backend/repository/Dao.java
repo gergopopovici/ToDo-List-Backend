@@ -9,7 +9,9 @@ import java.util.Collection;
 public interface Dao<T extends BaseEntity> {
     Collection<T> findAll();
 
-    void create(T entity) throws InvalidInputException;
+    void create(T entity);
+
+    void create2(Collection<T> entities) throws InvalidInputException;
 
     void delete(Long id) throws EntityNotFoundException;
 

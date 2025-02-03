@@ -18,9 +18,9 @@ public class ToDoServiceImplementation implements ToDoService {
 
 
     @Override
-    public void create(ToDo toDo) throws InvalidInputException {
-        validateToDoInput(toDo);
-        toDoDao.create(toDo);
+    public void create2(Collection<ToDo> toDo) throws InvalidInputException {
+        toDo.forEach(this::validateToDoInput);
+        toDoDao.create2(toDo);
     }
 
     private void validateToDoInput(ToDo toDo) throws InvalidInputException {
@@ -52,6 +52,12 @@ public class ToDoServiceImplementation implements ToDoService {
         if (priority == null || priority < 1 || priority > 3) {
             throw new InvalidInputException("Invalid input: priority must be between 1 and 3.");
         }
+    }
+
+    @Override
+    public void create(ToDo toDo) throws InvalidInputException {
+        validateToDoInput(toDo);
+        toDoDao.create(toDo);
     }
 
     @Override

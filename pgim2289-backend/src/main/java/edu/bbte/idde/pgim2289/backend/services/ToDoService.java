@@ -7,7 +7,9 @@ import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import java.util.Collection;
 
 public interface ToDoService {
-    void create(ToDo toDo) throws InvalidInputException;
+    void create2(Collection<ToDo> toDo) throws InvalidInputException;
+
+    void create(ToDo toDo) throws  InvalidInputException;
 
     Collection<ToDo> findAll();
 
