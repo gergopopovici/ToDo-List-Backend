@@ -66,6 +66,9 @@ public class ToDoServiceJpaImplementation implements ToDoService {
 
     @Override
     public void delete(Long id) throws EntityNotFoundException {
+        if (!toDoJpaRepo.existsById(id)) {
+            throw new EntityNotFoundException("ToDo not found with id: " + id);
+        }
         toDoJpaRepo.deleteById(id);
     }
 

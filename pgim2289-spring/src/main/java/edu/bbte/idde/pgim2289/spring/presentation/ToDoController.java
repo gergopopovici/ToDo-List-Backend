@@ -1,8 +1,10 @@
 package edu.bbte.idde.pgim2289.spring.presentation;
 
+import edu.bbte.idde.pgim2289.spring.config.CustomConfig;
 import edu.bbte.idde.pgim2289.spring.dto.RequestToDoDTO;
 import edu.bbte.idde.pgim2289.spring.dto.ResponseToDoDTO;
 import edu.bbte.idde.pgim2289.spring.exceptions.EntityNotFoundException;
+import edu.bbte.idde.pgim2289.spring.exceptions.FailedFlagMiss;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.mapper.ToDoMapper;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
@@ -18,13 +20,15 @@ import java.util.Collection;
 @RequestMapping("/api/todos")
 public class ToDoController {
     private final ToDoService toDoService;
+    private final CustomConfig customConfig;
     @Autowired
     private final ToDoMapper toDoMapper;
 
     @Autowired
-    public ToDoController(ToDoService toDoService, ToDoMapper toDoMapper) {
+    public ToDoController(ToDoService toDoService, ToDoMapper toDoMapper,CustomConfig config) {
         this.toDoService = toDoService;
         this.toDoMapper = toDoMapper;
+        this.customConfig = config;
     }
 
     @GetMapping
@@ -68,7 +72,13 @@ public class ToDoController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTodoById(@PathVariable Long id)
-            throws EntityNotFoundException {
-        toDoService.delete(id);
+            throws FailedFlagMiss,EntityNotFoundException {
+        try {
+            toDoService.delete(id);
+        }catch (EntityNotFoundException e) {
+            if(customConfig.isFailOnDeleteMissing()){
+                throw new FailedFlagMiss("Failed to delete does not exists");
+            }
+        }
     }
 }
