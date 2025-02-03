@@ -6,6 +6,8 @@ import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 
@@ -20,6 +22,7 @@ public class ToDoServiceImplementation implements ToDoService {
     @Override
     public void create(ToDo toDo) throws InvalidInputException {
         validateToDoInput(toDo);
+        toDo.setLastUpdatedAt(Timestamp.from(Instant.now()));
         toDoDao.create(toDo);
     }
 
@@ -71,6 +74,7 @@ public class ToDoServiceImplementation implements ToDoService {
                 || toDo.getDate() == null) {
             throw new InvalidInputException("Invalid input: title, description, and due date cannot be empty.");
         }
+        toDo.setLastUpdatedAt(Timestamp.from(Instant.now()));
         toDoDao.update(toDo);
     }
 

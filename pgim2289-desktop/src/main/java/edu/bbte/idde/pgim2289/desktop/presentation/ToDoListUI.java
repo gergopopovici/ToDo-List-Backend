@@ -26,6 +26,7 @@ public class ToDoListUI {
     private String title;
     private String description;
     private String dueDate;
+    private String createdAt;
     private String priority;
     private JTextField titleField;
     private JTextField descriptionField;
@@ -178,7 +179,7 @@ public class ToDoListUI {
     }
 
     private JTable createToDoTable() {
-        String[] columnNames = {"ID", "Title", "Description", "Due Date", "Priority Level"};
+        String[] columnNames = {"ID", "Title", "Description", "Due Date", "Priority Level", "lastUpdatedAt"};
         JTable toDoTable = new JTable();
         tableModel = new DefaultTableModel(columnNames, 0);
         toDoTable.setModel(tableModel);
@@ -226,7 +227,8 @@ public class ToDoListUI {
                     todo.getTitle(),
                     todo.getDescription(),
                     new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(todo.getDate()),
-                    todo.getPriority()
+                    todo.getPriority(),
+                    new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.ENGLISH).format(todo.getLastUpdatedAt())
             };
             tableModel.addRow(rowData);
         }

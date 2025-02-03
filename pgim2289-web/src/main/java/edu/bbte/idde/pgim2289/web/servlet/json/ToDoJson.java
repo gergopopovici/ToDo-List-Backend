@@ -13,11 +13,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 
+@Slf4j
 @WebServlet("/todos")
 public class ToDoJson extends HttpServlet {
     private final transient ToDoService toDoService = new ToDoServiceImplementation();
@@ -28,7 +31,7 @@ public class ToDoJson extends HttpServlet {
         String idParam = request.getParameter("id");
 
         response.setContentType("application/json");
-
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         if (idParam != null) {
             try {
                 Long id = Long.parseLong(idParam);
@@ -57,6 +60,11 @@ public class ToDoJson extends HttpServlet {
         response.setContentType("application/json");
         try (BufferedReader reader = request.getReader()) {
             ToDo todo = objectMapper.readValue(reader, ToDo.class);
+            log.info("todo {}", todo.getLastUpdatedAt());
+            if (todo.getLastUpdatedAt() != null) {
+                log.info("todo here {}", todo.getLastUpdatedAt());
+                throw new InvalidInputException("Invalid input for last updated date");
+            }
             toDoService.create(todo);
             response.setStatus(HttpServletResponse.SC_CREATED);
             objectMapper.writeValue(response.getWriter(), todo);

@@ -5,6 +5,8 @@ import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.BaseEntity;
 import edu.bbte.idde.pgim2289.backend.repository.Dao;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +30,7 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
         if (entities.containsKey(nextId.get() - 1)) {
             throw new InvalidInputException("This + " + nextId + "is already taken");
         }
+        entity.setLastUpdatedAt(Timestamp.from(Instant.now()));
         entities.put(entity.getId(), entity);
     }
 
@@ -43,6 +46,7 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
     public void update(T entity) throws EntityNotFoundException {
 
         if (entities.containsKey(entity.getId())) {
+            entity.setLastUpdatedAt(Timestamp.from(Instant.now()));
             entities.put(entity.getId(), entity);
         } else {
             throw new EntityNotFoundException("Entity with the ID of " + entity.getId() + " is non existent");

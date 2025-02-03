@@ -1,18 +1,26 @@
 package edu.bbte.idde.pgim2289.backend.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     protected Long id;
+    @Getter
+    @Setter
+    protected Timestamp lastUpdatedAt;
 
     public BaseEntity() {
     }
 
-    public BaseEntity(Long id) {
+    public BaseEntity(Long id, Timestamp lastUpdatedAt) {
         this.id = id;
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
     public Long getId() {

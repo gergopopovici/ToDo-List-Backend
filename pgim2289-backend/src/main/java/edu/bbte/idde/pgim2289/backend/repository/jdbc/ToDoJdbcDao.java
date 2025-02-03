@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -49,6 +46,7 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
         todo.setDescription(resultSet.getString("Description"));
         todo.setDate(resultSet.getDate("DueDate"));
         todo.setTitle(resultSet.getString("Title"));
+        todo.setLastUpdatedAt(resultSet.getTimestamp("lastUpdatedAt"));
         return todo;
     }
 
@@ -57,8 +55,9 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
         // validateToDoInput(entity);
         statement.setString(1, entity.getTitle());
         statement.setInt(2, entity.getPriority());
-        statement.setDate(3, new java.sql.Date(entity.getDate().getTime()));
+        statement.setDate(3, new Date(entity.getDate().getTime()));
         statement.setString(4, entity.getDescription());
+        statement.setTimestamp(5, entity.getLastUpdatedAt());
     }
 
     @Override
@@ -66,9 +65,10 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
         // validateToDoInput(entity);
         statement.setString(1, entity.getTitle());
         statement.setInt(2, entity.getPriority());
-        statement.setDate(3, new java.sql.Date(entity.getDate().getTime()));
+        statement.setDate(3, new Date(entity.getDate().getTime()));
         statement.setString(4, entity.getDescription());
         statement.setLong(5, entity.getId());
+        statement.setTimestamp(5, entity.getLastUpdatedAt());
     }
 
     @Override
@@ -78,6 +78,6 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
 
     @Override
     protected List<String> getColumnNames() {
-        return List.of("Title", "Priority", "DueDate", "Description");
+        return List.of("Title", "Priority", "DueDate", "Description", "lastUpdatedAt");
     }
 }

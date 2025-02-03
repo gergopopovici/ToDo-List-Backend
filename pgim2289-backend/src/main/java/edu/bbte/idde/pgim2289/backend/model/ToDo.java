@@ -1,5 +1,6 @@
 package edu.bbte.idde.pgim2289.backend.model;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class ToDo extends BaseEntity {
@@ -12,8 +13,8 @@ public class ToDo extends BaseEntity {
         super();
     }
 
-    public ToDo(Long id, String title, String description, Date dueDate, Integer priority) {
-        super(id);
+    public ToDo(Long id, String title, String description, Date dueDate, Integer priority, Timestamp lastUpdatedAt) {
+        super(id, lastUpdatedAt);
         this.dueDate = dueDate;
         this.title = title;
         this.description = description;
@@ -60,6 +61,7 @@ public class ToDo extends BaseEntity {
                 + ", date=" + dueDate
                 + ", priority=" + priority
                 + ", id=" + id
+                + ", lastUpdatedAt=" + lastUpdatedAt
                 + '}';
     }
 }
