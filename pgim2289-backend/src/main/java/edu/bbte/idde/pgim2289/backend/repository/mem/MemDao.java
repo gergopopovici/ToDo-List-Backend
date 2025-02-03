@@ -4,12 +4,14 @@ import edu.bbte.idde.pgim2289.backend.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.BaseEntity;
 import edu.bbte.idde.pgim2289.backend.repository.Dao;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Slf4j
 public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
 
     protected Map<Long, T> entities = new ConcurrentHashMap<>();
@@ -22,15 +24,17 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
 
     @Override
     public void create2(Collection<T> entities2) throws InvalidInputException {
-        entities2.forEach(entity -> {
+        for (T entity : entities2) {
             if (entity.getId() == null) {
                 entity.setId(nextId.getAndIncrement());
             }
-            if (entities.containsKey(nextId.get() - 1)) {
-                throw new InvalidInputException("This + " + nextId + "is already taken");
+            if (entities.containsKey(entity.getId())) { // Fix: check entity.getId() instead of nextId.get() - 1
+                throw new InvalidInputException("Entity with ID " + entity.getId() + " is already taken");
             }
-            entities.put(entity.getId(), entity);
-        });
+            entities.put(entity.getId(), entity); // Fix: insert before logging
+            log.info("Inserted entity: {}", entity);
+            log.info("Updated entities map: {}", entities);
+        }
     }
 
     @Override
@@ -38,35 +42,36 @@ public abstract class MemDao<T extends BaseEntity> implements Dao<T> {
         if (entity.getId() == null) {
             entity.setId(nextId.getAndIncrement());
         }
-        if (entities.containsKey(entity.getId())) {
-            entities.put(entity.getId(), entity);
+        if (entities.containsKey(entity.getId())) { // Fix: check entity.getId() instead of nextId.get() - 1
+            throw new InvalidInputException("Entity with ID " + entity.getId() + " is already taken");
         }
+        entities.put(entity.getId(), entity);
+        log.info("Inserted entity: {}", entity);
+        log.info("Updated entities map: {}", entities);
     }
 
     @Override
     public void delete(Long id) throws EntityNotFoundException {
         if (!entities.containsKey(id)) {
-            throw new EntityNotFoundException("Entity with the ID of " + id + " is non existent");
+            throw new EntityNotFoundException("Entity with ID " + id + " does not exist");
         }
         entities.remove(id);
     }
 
     @Override
     public void update(T entity) throws EntityNotFoundException {
-
-        if (entities.containsKey(entity.getId())) {
-            entities.put(entity.getId(), entity);
-        } else {
-            throw new EntityNotFoundException("Entity with the ID of " + entity.getId() + " is non existent");
+        if (!entities.containsKey(entity.getId())) {
+            throw new EntityNotFoundException("Entity with ID " + entity.getId() + " does not exist");
         }
+        entities.put(entity.getId(), entity);
     }
 
     @Override
     public T findById(Long id) throws EntityNotFoundException {
-        if (entities.containsKey(id)) {
-            return entities.get(id);
-        } else {
-            throw new EntityNotFoundException("Entity with the ID of " + id + " is non existent");
+        T entity = entities.get(id);
+        if (entity == null) {
+            throw new EntityNotFoundException("Entity with ID " + id + " does not exist");
         }
+        return entity;
     }
 }
