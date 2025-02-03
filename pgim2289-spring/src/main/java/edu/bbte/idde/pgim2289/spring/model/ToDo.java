@@ -1,5 +1,6 @@
 package edu.bbte.idde.pgim2289.spring.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,7 @@ public class ToDo extends BaseEntity {
     private Date dueDate;
     @Setter
     @Getter
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Column(name = "Priority")
     private Integer priority;
     @Getter

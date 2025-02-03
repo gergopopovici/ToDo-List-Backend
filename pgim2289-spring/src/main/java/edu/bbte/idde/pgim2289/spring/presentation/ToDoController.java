@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/todos")
@@ -28,13 +29,28 @@ public class ToDoController {
     }
 
     @GetMapping
-    public Collection<ResponseToDoDTO> getAllToDos(@RequestParam(required = false) Integer priority) {
+    public Collection<ResponseToDoDTO> getAllToDos(@RequestParam(required = false) Integer priority, @RequestParam(required = true) String full) throws InvalidInputException {
+        if (!Objects.equals(full, "no") && !Objects.equals(full, "yes")) {
+            throw new InvalidInputException("Nem lehet mas");
+        }
         if (priority != null) {
+            Collection<ToDo> toDos = toDoService.findByPriority(priority);
+            if (full.equals("no")) {
+                toDos.forEach(toDo -> {
+                    toDo.setPriority(null);
+                });
+            }
             return toDoService.findByPriority(priority).stream()
                     .map(toDoMapper::toDTO)
                     .toList();
         } else {
-            return toDoService.findAll().stream()
+            Collection<ToDo> toDos = toDoService.findAll();
+            if (full.equals("no")) {
+                toDos.forEach(toDo -> {
+                    toDo.setPriority(null);
+                });
+            }
+            return toDos.stream()
                     .map(toDoMapper::toDTO)
                     .toList();
         }
@@ -43,6 +59,7 @@ public class ToDoController {
     @GetMapping("/{id}")
     public ResponseToDoDTO getToDoById(@PathVariable Long id) {
         ToDo toDo = toDoService.findById(id);
+        toDo.setPriority(null);
         return toDoMapper.toDTO(toDo);
     }
 
