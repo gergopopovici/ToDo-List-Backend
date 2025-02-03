@@ -1,4 +1,4 @@
-package edu.bbte.idde.pgim2289.web.servlet;
+package edu.bbte.idde.pgim2289.web.servlet.json;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -8,6 +8,7 @@ import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.services.ToDoService;
 import edu.bbte.idde.pgim2289.backend.services.ToDoServiceImplementation;
+import edu.bbte.idde.pgim2289.web.servlet.customerrormessages.Error;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

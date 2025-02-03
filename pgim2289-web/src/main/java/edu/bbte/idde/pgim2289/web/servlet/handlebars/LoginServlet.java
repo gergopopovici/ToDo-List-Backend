@@ -1,4 +1,4 @@
-package edu.bbte.idde.pgim2289.web.servlet;
+package edu.bbte.idde.pgim2289.web.servlet.handlebars;
 
 import com.github.jknack.handlebars.Template;
 import jakarta.servlet.annotation.WebServlet;

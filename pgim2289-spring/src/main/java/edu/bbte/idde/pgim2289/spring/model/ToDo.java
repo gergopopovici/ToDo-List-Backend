@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "ToDo")
+@Table(name = "todospring")
 public class ToDo extends BaseEntity {
     @Getter
     @Setter

@@ -1,4 +1,4 @@
-package edu.bbte.idde.pgim2289.web.servlet;
+package edu.bbte.idde.pgim2289.web.servlet.handlebars;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
