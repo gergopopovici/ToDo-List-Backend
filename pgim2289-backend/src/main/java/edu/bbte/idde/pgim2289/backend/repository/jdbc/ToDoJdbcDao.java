@@ -80,4 +80,24 @@ public class ToDoJdbcDao extends JdbcDao<ToDo> implements ToDoDao {
     protected List<String> getColumnNames() {
         return List.of("Title", "Priority", "DueDate", "Description");
     }
+
+    @Override
+    public Collection<ToDo> findBetweenPriority(int min, int max) {
+        logger.info("Finding all entities between min {}, max {}", min, max);
+        Collection<ToDo> todos = new ArrayList<>();
+        String sql = "SELECT * FROM " + tableName + " WHERE Priority <= ? AND Priority >= ?";
+        try (Connection conn = DataSourceFactory.getDataSource().getConnection()) {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, max);
+            statement.setInt(2, min);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                todos.add(mapRow(resultSet));
+            }
+        } catch (SQLException | IOException ex) {
+            logger.error("Error while executing SQL query", ex);
+            throw new DatabaseException("Error while finding all entities between min " + min + ", max " + max, ex);
+        }
+        logger.info("Returning all entities between min{} max{} ",min, max);
+        return todos;    }
 }

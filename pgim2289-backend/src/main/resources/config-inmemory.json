@@ -1,3 +1,4 @@
 {
+  "minMax": true,
   "daoType": "inMemory"
 }

@@ -16,4 +16,6 @@ public interface Dao<T extends BaseEntity> {
     void update(T entity) throws EntityNotFoundException;
 
     T findById(Long id) throws EntityNotFoundException;
+
+    Collection<T>findBetweenPriority(int min,int max);
 }

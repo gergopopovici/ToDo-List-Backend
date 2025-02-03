@@ -8,6 +8,7 @@ import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public class ToDoServiceImplementation implements ToDoService {
     private final ToDoDao toDoDao;
@@ -82,6 +83,11 @@ public class ToDoServiceImplementation implements ToDoService {
     @Override
     public ToDo findById(Long id) {
         return toDoDao.findById(id);
+    }
+
+    @Override
+    public Collection<ToDo> findByPriorityBetween(int min, int max) {
+        return  toDoDao.findBetweenPriority(min,max);
     }
 
 }

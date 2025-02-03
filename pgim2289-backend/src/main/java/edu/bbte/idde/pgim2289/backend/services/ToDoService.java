@@ -18,4 +18,5 @@ public interface ToDoService {
     Collection<ToDo> findByPriority(Integer priority);
 
     ToDo findById(Long id);
+    Collection<ToDo> findByPriorityBetween(int min, int max);
 }

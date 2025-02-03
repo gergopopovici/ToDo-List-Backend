@@ -1,5 +1,8 @@
 package edu.bbte.idde.pgim2289.backend.config;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Config {
     private String daoType;
     private String jdbcUrl;
@@ -7,6 +10,9 @@ public class Config {
     private String jdbcUser;
     private String jdbcPassword;
     private int jdbcPoolSize;
+    @Getter
+    @Setter
+    private Boolean minMax;
 
     public String getDaoType() {
         return daoType;
