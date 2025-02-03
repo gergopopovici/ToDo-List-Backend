@@ -8,6 +8,7 @@ import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.services.ToDoService;
 import edu.bbte.idde.pgim2289.backend.services.ToDoServiceImplementation;
+import edu.bbte.idde.pgim2289.web.servlet.custom.CustomObjectMapper;
 import edu.bbte.idde.pgim2289.web.servlet.customerrormessages.Error;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,18 +18,18 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 @Slf4j
 @WebServlet("/todos")
 public class ToDoJson extends HttpServlet {
     private final transient ToDoService toDoService = new ToDoServiceImplementation();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = CustomObjectMapper.createConfiguredObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String idParam = request.getParameter("id");
-
         response.setContentType("application/json");
 
         if (idParam != null) {
@@ -59,7 +60,7 @@ public class ToDoJson extends HttpServlet {
         response.setContentType("application/json");
         try (BufferedReader reader = request.getReader()) {
             ToDo todo = objectMapper.readValue(reader, ToDo.class);
-            if(todo.getCreationDate()!=null){
+            if (todo.getCreationDate() != null) {
                 throw new InvalidInputException("Creation date can't be set by the user");
             }
             toDoService.create(todo);
