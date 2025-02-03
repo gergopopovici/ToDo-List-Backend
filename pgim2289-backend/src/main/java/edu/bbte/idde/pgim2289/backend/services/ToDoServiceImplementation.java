@@ -5,10 +5,13 @@ import edu.bbte.idde.pgim2289.backend.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.backend.model.ToDo;
 import edu.bbte.idde.pgim2289.backend.repository.DaoFactory;
 import edu.bbte.idde.pgim2289.backend.repository.ToDoDao;
+import lombok.extern.slf4j.Slf4j;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 
+@Slf4j
 public class ToDoServiceImplementation implements ToDoService {
     private final ToDoDao toDoDao;
 
@@ -20,7 +23,10 @@ public class ToDoServiceImplementation implements ToDoService {
     @Override
     public void create(ToDo toDo) throws InvalidInputException {
         validateToDoInput(toDo);
+        toDo.setCreationDate(Instant.now());
         toDoDao.create(toDo);
+        log.info("todo creation date {}",toDo.getCreationDate());
+        log.info("todo{}",toDo);
     }
 
     private void validateToDoInput(ToDo toDo) throws InvalidInputException {
@@ -81,7 +87,9 @@ public class ToDoServiceImplementation implements ToDoService {
 
     @Override
     public ToDo findById(Long id) {
-        return toDoDao.findById(id);
+        ToDo toDo = toDoDao.findById(id);
+        log.info("todo find by ID {}", toDo);
+        return toDo;
     }
 
 }

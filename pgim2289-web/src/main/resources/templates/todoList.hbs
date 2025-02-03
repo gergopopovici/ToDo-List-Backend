@@ -10,6 +10,7 @@
 <a href="{{contextPath}}/webserver/logout">Logout</a>
 <ul>
     {{#each todos}}
+        {{this.creationDate}}
         <li>ID: {{this.id}}, Title: {{this.title}}, Description: {{this.description}},DueDate:{{this.date}},
             Priority:{{this.priority}}</li>
     {{/each}}

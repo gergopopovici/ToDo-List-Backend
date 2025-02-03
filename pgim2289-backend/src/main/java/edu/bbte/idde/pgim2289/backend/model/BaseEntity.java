@@ -1,6 +1,10 @@
 package edu.bbte.idde.pgim2289.backend.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
 public abstract class BaseEntity implements Serializable {
@@ -8,11 +12,16 @@ public abstract class BaseEntity implements Serializable {
 
     protected Long id;
 
+    @Getter
+    @Setter
+    protected Instant creationDate;
+
     public BaseEntity() {
     }
 
-    public BaseEntity(Long id) {
+    public BaseEntity(Long id,Instant creationDate ) {
         this.id = id;
+        this.creationDate = creationDate;
     }
 
     public Long getId() {
