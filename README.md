@@ -1,4 +1,60 @@
-# IDDE laborfeladatok
+# ToDoList App  
+
+## Overview  
+The ToDoList App is a structured, multi-module Java project designed for task management. It provides both desktop (JavaFX) and web-based (Servlets, Spring Boot) UIs, supports JDBC & JPA database integration, and follows a layered architecture for maintainability and scalability.  
+
+## Features  
+- **Multi-Layered Architecture**  
+  - **Data Access Layer (DAL):** Supports in-memory storage, JDBC, and Spring Data JPA.  
+  - **Business Logic Layer (BLL):** Handles validation and exception management.  
+  - **Presentation Layer (PL):** JavaFX for desktop and Servlets for web UI.  
+- **Multi-Module Gradle Project**  
+  - `backend` – Business logic & data layer  
+  - `desktop` – JavaFX UI  
+  - `web` – Servlets & JSON API  
+  - `spring-module` – Spring Boot API  
+- **Database Support**  
+  - In-memory, JDBC (PostgreSQL, MySQL), and Hibernate.  
+  - Uses HikariCP for connection pooling.  
+- **Web API (JSON-based REST API)**  
+  - Uses DTOs and Jakarta Validation API for data validation.  
+  - HTML-based UI with Thymeleaf/Handlebars.  
+- **Authentication & Security**  
+  - Session-based authentication (Servlets).  
+  - JWT & Spring Security (Spring module).  
+
+---
+
+## API Endpoints  
+
+### To-Do Endpoints  
+| Method | Endpoint | Description |
+|--------|---------|-------------|
+| GET | `api/todos` | List all to-dos |
+| GET | `api/todos/{id}` | Get a specific to-do |
+| POST | `api/todos` | Create a new to-do |
+| PUT | `api/todos/{id}` | Update a to-do |
+| DELETE | `api/todos/{id}` | Delete a to-do |
+
+### Task Endpoints  
+| Method | Endpoint | Description |
+|--------|---------|-------------|
+| GET | `api/todos/{id}/tasks` | List all tasks for a to-do |
+| POST | `api/todos/{id}/tasks` | Add a new task to a to-do |
+| DELETE | `api/todos/{id}/tasks/{taskId}` | Delete a specific task |
+
+### Query Parameter Example  
+You can filter by ID using query parameters:  
+`http://localhost:8080/ToDoList-pgim2289/todos?id=2`  
+
+---
+
+## Testing  
+- Use Postman or cURL for API testing.  
+- Run unit tests with:  
+  ```sh
+  ./gradlew test  
+
 
 # Webserver
 gradle undeploy
