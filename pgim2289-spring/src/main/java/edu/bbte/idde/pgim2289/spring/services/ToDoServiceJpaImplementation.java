@@ -3,7 +3,10 @@ package edu.bbte.idde.pgim2289.spring.services;
 import edu.bbte.idde.pgim2289.spring.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
+import edu.bbte.idde.pgim2289.spring.repository.UserJpa;
 import edu.bbte.idde.pgim2289.spring.repository.repo.ToDoJpaRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -14,25 +17,40 @@ import java.util.Date;
 @Service
 @Profile("jpa")
 public class ToDoServiceJpaImplementation implements ToDoService {
-    private final ToDoJpaRepo toDoJpaRepo;
+    private final ToDoJpaRepo toDoDaoJpa;
+    private final UserJpa userJpa;
+    private final Logger logger = LoggerFactory.getLogger(ToDoServiceJpaImplementation.class);
 
     @Autowired
-    public ToDoServiceJpaImplementation(ToDoJpaRepo toDoJpaRepo) {
-        this.toDoJpaRepo = toDoJpaRepo;
+    public ToDoServiceJpaImplementation(ToDoJpaRepo toDoDaoJpa, UserJpa userJpa) {
+        this.toDoDaoJpa = toDoDaoJpa;
+        this.userJpa = userJpa;
     }
 
 
     @Override
     public void create(ToDo toDo) throws InvalidInputException {
         validateToDoInput(toDo);
-        toDoJpaRepo.save(toDo);
+        logger.info("Creating new ToDo: {}", toDo);
+        if (!userJpa.existsById(toDo.getUserId())) {
+            throw new InvalidInputException("Invalid input: User with the given ID does not exist.");
+        }
+        toDoDaoJpa.save(toDo);
     }
 
     private void validateToDoInput(ToDo toDo) throws InvalidInputException {
+        validateUserId(toDo.getUserId());
         validateTitle(toDo.getTitle());
         validateDescription(toDo.getDescription());
         validateDate(toDo.getDate());
         validatePriority(toDo.getPriority());
+    }
+
+    private void validateUserId(Long userId) throws InvalidInputException {
+        if (!userJpa.existsById(userId)) {
+            throw new InvalidInputException("Invalid input: "
+                    + "User with the given ID does not exist.");
+        }
     }
 
     private void validateTitle(String title) throws InvalidInputException {
@@ -61,31 +79,48 @@ public class ToDoServiceJpaImplementation implements ToDoService {
 
     @Override
     public Collection<ToDo> findAll() {
-        return toDoJpaRepo.findAll();
+        return toDoDaoJpa.findAll();
     }
 
     @Override
-    public void delete(Long id) throws EntityNotFoundException {
-        toDoJpaRepo.deleteById(id);
+    public void delete(Long id, Long userId) throws EntityNotFoundException {
+        ToDo toDo = findById(id);
+        if (!toDo.getUserId().equals(userId)) {
+            throw new InvalidInputException("Invalid operation: Only the owner can delete this ToDo.");
+        }
+        toDoDaoJpa.deleteById(id);
     }
 
     @Override
     public void update(ToDo toDo) throws EntityNotFoundException, InvalidInputException {
-        if (toDo.getTitle() == null || toDo.getTitle().isBlank()
-                || toDo.getDescription() == null || toDo.getDescription().isBlank()
-                || toDo.getDate() == null) {
-            throw new InvalidInputException("Invalid input: title, description, and due date cannot be empty.");
+        validateToDoInput(toDo);
+        ToDo existingToDo = findById(toDo.getId());
+        if (!existingToDo.getUserId().equals(toDo.getUserId())) {
+            throw new InvalidInputException("Invalid input: User ID cannot be changed.");
         }
-        toDoJpaRepo.save(toDo);
+        toDoDaoJpa.save(toDo);
     }
 
     @Override
     public Collection<ToDo> findByPriority(Integer priority) {
-        return toDoJpaRepo.findByPriority(priority);
+        return toDoDaoJpa.findByPriority(priority);
     }
 
     @Override
     public ToDo findById(Long id) {
-        return toDoJpaRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("ToDo not found with id: " + id));
+        return toDoDaoJpa.findById(id).orElseThrow(() -> new EntityNotFoundException("ToDo not found with id: " + id));
+    }
+
+    @Override
+    public Collection<ToDo> findByUserId(Long userId) {
+        if (userJpa.findById(userId).isEmpty()) {
+            throw new EntityNotFoundException("User not found with id: " + userId);
+        }
+        return toDoDaoJpa.findByUserId(userId);
+    }
+
+    @Override
+    public Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo) {
+        return toDoDaoJpa.findByFilters(priority, dueDateFrom, dueDateTo);
     }
 }

@@ -26,8 +26,13 @@ public class ToDo extends BaseEntity {
     @Getter
     @Column(name = "Priority")
     private Integer priority;
+
+    @JoinColumn(name = "userId", nullable = false)
     @Getter
+    @Setter
+    private Long userId;
     @OneToMany(mappedBy = "toDo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
     private final List<Task> tasks = new ArrayList<>();
 
     public void addTask(Task task) {
