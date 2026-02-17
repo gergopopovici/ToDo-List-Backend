@@ -4,18 +4,23 @@ import edu.bbte.idde.pgim2289.spring.dto.LoginRequest;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.User;
 import edu.bbte.idde.pgim2289.spring.services.UserService;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,22 +35,22 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody @Valid LoginRequest loginRequest, HttpServletResponse response) {
+    public User login(@RequestBody @Valid LoginRequest loginRequest, HttpServletRequest request) {
         Logger logger = LoggerFactory.getLogger(LoginController.class);
         User user = userService.findByUsername(loginRequest.getUsername());
 
         if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            ResponseCookie cookie = ResponseCookie.from("userId", String.valueOf(user.getId()))
-                    .httpOnly(false)
-                    .secure(true)
-                    .path("/")
-                    .maxAge(3600)
-                    .sameSite("None")
-                    .build();
 
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), null, new ArrayList<>());
 
-            logger.info("Login successful");
+            SecurityContext sc = SecurityContextHolder.getContext();
+            sc.setAuthentication(auth);
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
+
+            logger.info("Login successful. JSESSIONID created.");
             return user;
         } else {
             throw new InvalidInputException("Invalid username or password");
