@@ -28,7 +28,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody @Valid LoginRequest loginRequest, HttpServletResponse response) {
+    public User login(@RequestBody @Valid LoginRequest loginRequest, HttpServletResponse response) {
         Logger logger = org.slf4j.LoggerFactory.getLogger(LoginController.class);
         User user = userService.findByUsername(loginRequest.getUsername());
         if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
@@ -38,7 +38,7 @@ public class LoginController {
             cookie.setMaxAge(60 * 60);
             response.addCookie(cookie);
             logger.info("Login successful");
-            return "Login successful";
+            return user;
         } else {
             throw new InvalidInputException("Invalid username or password");
         }
