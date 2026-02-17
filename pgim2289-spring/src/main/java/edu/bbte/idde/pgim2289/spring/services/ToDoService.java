@@ -5,17 +5,22 @@ import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 
 import java.util.Collection;
+import java.util.Date;
 
 public interface ToDoService {
     void create(ToDo toDo) throws InvalidInputException;
 
     Collection<ToDo> findAll();
 
-    void delete(Long id) throws EntityNotFoundException;
+    void delete(Long id, Long userID) throws EntityNotFoundException;
 
     void update(ToDo toDo) throws EntityNotFoundException, InvalidInputException;
 
     Collection<ToDo> findByPriority(Integer priority);
 
     ToDo findById(Long id);
+
+    Collection<ToDo> findByUserId(Long userId);
+
+    Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo);
 }

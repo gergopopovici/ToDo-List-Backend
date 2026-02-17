@@ -2,6 +2,7 @@ package edu.bbte.idde.pgim2289.spring.services;
 
 import edu.bbte.idde.pgim2289.spring.exceptions.EntityNotFoundException;
 import edu.bbte.idde.pgim2289.spring.exceptions.InvalidInputException;
+import edu.bbte.idde.pgim2289.spring.model.Task;
 import edu.bbte.idde.pgim2289.spring.model.ToDo;
 import edu.bbte.idde.pgim2289.spring.repository.ToDoDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Profile("!jpa")
@@ -65,7 +67,7 @@ public class ToDoServiceImplementation implements ToDoService {
     }
 
     @Override
-    public void delete(Long id) throws EntityNotFoundException {
+    public void delete(Long id, Long userID) throws EntityNotFoundException {
         toDoDao.delete(id);
     }
 
@@ -76,6 +78,11 @@ public class ToDoServiceImplementation implements ToDoService {
                 || toDo.getDate() == null) {
             throw new InvalidInputException("Invalid input: title, description, and due date cannot be empty.");
         }
+        Task task = toDo.getTasks().stream()
+                .filter(t -> t.getToDo() == null)
+                .findFirst()
+                .orElse(null);
+        toDo.addTask(task);
         toDoDao.update(toDo);
     }
 
@@ -89,4 +96,13 @@ public class ToDoServiceImplementation implements ToDoService {
         return toDoDao.findById(id);
     }
 
+    @Override
+    public Collection<ToDo> findByUserId(Long userId) {
+        return List.of();
+    }
+
+    @Override
+    public Collection<ToDo> findByFilters(Integer priority, Date dueDateFrom, Date dueDateTo) {
+        return List.of();
+    }
 }

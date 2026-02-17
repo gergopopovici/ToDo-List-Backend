@@ -3,6 +3,7 @@ package edu.bbte.idde.pgim2289.spring.dto;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ResponseToDoDTO {
@@ -11,4 +12,6 @@ public class ResponseToDoDTO {
     private String description;
     private Date date;
     private Integer priority;
+    private Long userId;
+    private List<ResponseTaskDTO> tasks;
 }
