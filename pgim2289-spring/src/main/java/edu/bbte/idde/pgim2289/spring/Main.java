@@ -19,8 +19,7 @@ public class Main {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:5173",
-                                "https://to-do-list-web-application-ten.vercel.app/login")
+                        .allowedOrigins("https://to-do-list-web-application-ten.vercel.app/login")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowCredentials(true);
             }

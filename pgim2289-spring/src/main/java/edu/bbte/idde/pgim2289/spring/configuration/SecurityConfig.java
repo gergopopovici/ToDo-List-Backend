@@ -24,10 +24,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/api/todos/**", "/api/users/**", "/api/auth/**")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated());
+                                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/todos/**").permitAll()
+                                .requestMatchers("/api/todos/**", "/api/users/**", "/api/auth/**").authenticated()
+                                .anyRequest().authenticated());
         return http.build();
     }
 }
