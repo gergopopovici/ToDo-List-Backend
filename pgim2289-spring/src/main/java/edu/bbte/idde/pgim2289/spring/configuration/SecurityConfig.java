@@ -27,7 +27,7 @@ public class SecurityConfig {
                                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/todos/**").permitAll()
                                 // Permit registration and login so new users can join!
                                 .requestMatchers("/api/auth/**", "/api/users/**").permitAll()
-                                .requestMatchers("/api/todos/**").authenticated()
+                                .requestMatchers("/api/todos/**").permitAll()
                                 .anyRequest().authenticated());
         return http.build();
     }
