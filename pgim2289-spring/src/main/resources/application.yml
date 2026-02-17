@@ -1,3 +1,11 @@
 spring:
   profiles:
     active: jpa
+
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: none
+        secure: true
+        http-only: true
